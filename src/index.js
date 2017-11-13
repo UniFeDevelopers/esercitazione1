@@ -38,7 +38,7 @@ const addClickToRects = () => {
 
     const color = [colorR, colorG, colorB, colorA]
 
-    rects.push(
+    let rect = [
       click1.x,
       click1.y,
       ...color,
@@ -56,8 +56,10 @@ const addClickToRects = () => {
       ...color,
       click2.x,
       click1.y,
-      ...color
-    )
+      ...color,
+    ]
+
+    rects.push(rect)
 
     return true
   }
@@ -88,14 +90,15 @@ canvas.addEventListener('click', e => {
 })
 
 document.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.keyCode == 90 && rects.length > 0) {
-    if (rects.length % 2 === 0) {
+  if (e.ctrlKey && e.code == 'KeyZ' && rects.length > 0) {
+    if (clickBuff.length > 0) {
       clickBuff.pop()
-      clickBuff.pop()
-      draw()
     } else {
-      clickBuff.pop()
+      rects.pop()
+      draw()
     }
+
+    toggleWaitingSecondClick()
   }
 })
 
@@ -118,15 +121,17 @@ const init = (canvas, height, width) => {
 const draw = () => {
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  let buffer = gl.createBuffer()
+  for (let rect of rects) {
+    let buffer = gl.createBuffer()
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rects), gl.STATIC_DRAW)
-  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 6 * 4, 0)
-  gl.enableVertexAttribArray(a_Position)
-  gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 6 * 4, 2 * 4)
-  gl.enableVertexAttribArray(a_Color)
-  gl.drawArrays(gl.TRIANGLES, 0, rects.length / 6)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rect), gl.STATIC_DRAW)
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 6 * 4, 0)
+    gl.enableVertexAttribArray(a_Position)
+    gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 6 * 4, 2 * 4)
+    gl.enableVertexAttribArray(a_Color)
+    gl.drawArrays(gl.TRIANGLES, 0, rect.length / 6)
+  }
 }
 
 const gl = init(canvas, height, width)
