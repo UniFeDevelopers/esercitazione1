@@ -1,6 +1,7 @@
 body {
   margin: 0;
   overflow: hidden;
+  font-family: sans-serif;
 }
 
 input#color-input {
@@ -9,4 +10,43 @@ input#color-input {
   right: 10px;
   width: 50px;
   height: 50px;
+  border-radius: 10px;
+}
+
+.help-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+
+  .help-icon {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    border-radius: 100%;
+    font-style: normal;
+    padding: 5px 11px;
+    font-weight: 100;
+    font-size: 1.1em;
+    cursor: help;
+    box-sizing: border-box;
+  }
+
+  p.help-label {
+    display: none;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    margin: 5px 0;
+    font-size: 0.9em;
+    border-radius: 10px;
+  }
+
+  &:hover,
+  &:focus {
+    p.help-label {
+      display: block;
+    }
+  }
 }
