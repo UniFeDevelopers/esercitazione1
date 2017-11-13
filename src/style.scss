@@ -6,6 +6,18 @@ body {
   &.redirect {
     padding: 20px;
   }
+
+  &.es2 {
+    background: #000;
+    text-align: center;
+
+    .dg.main {
+      .close-button {
+        border: 1px solid #e3e3e3;
+        border-top: 0;
+      }
+    }
+  }
 }
 
 .link-esercizi {
