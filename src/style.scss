@@ -2,6 +2,21 @@ body {
   margin: 0;
   overflow: hidden;
   font-family: sans-serif;
+
+  &.redirect {
+    padding: 20px;
+  }
+}
+
+.link-esercizi {
+  display: flex;
+  flex-flow: row nowrap;
+  text-align: center;
+
+  a.esercizio {
+    width: 50%;
+    padding: 20px;
+  }
 }
 
 input#color-input {

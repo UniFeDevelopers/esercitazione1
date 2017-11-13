@@ -1,9 +1,8 @@
-# Esercizio 1
-### 1° gruppo esercitazioni
+# 1° gruppo esercitazioni
 
 Esercitazioni del corso di Grafica Computerizzata  
   
-## Obiettivi
+## Esercizio 1
 
 Sviluppare un'applicazione che permetta di disegnare dei rettangoli.
 La modalità di disegno deve essere la seguente:
@@ -13,3 +12,14 @@ La modalità di disegno deve essere la seguente:
 
 Se sono presenti altri rettangoli sullo schermo, il disegnare un nuovo rettangolo non deve cancellare i precedenti.
 L'utente preveda che la combinazione di tasti `Ctrl-z` permetta l'_undo_ dell'ultima operazione.
+
+## Esercizio 2
+
+Sviluppate un'applicazione che permetta di disegnare uno dei seguenti solidi geometrici:
+* cubo
+* cono
+* cilindro
+* toro
+* sfera
+
+L'applicazione deve permettere di selezionare sia la figura per mezzo di menu gestito tramite dat.gui.js come il colore del solido.
