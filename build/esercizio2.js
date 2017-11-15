@@ -2,11 +2,126 @@
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 // Vertex shader program
 var vertexShaderSource = '\n  attribute vec4 a_Position;   // Vertex coordinates\n  attribute vec4 a_Color;      // Vertex Color\n  uniform mat4 u_MvpMatrix;    // Model-View-Projection Matrix\n  varying vec4 v_Color;        // vertex color\n\n  void main() {\n    gl_Position = u_MvpMatrix * a_Position;\n    v_Color = a_Color;\n  }\n';
 
 // Fragment shader program
 var fragmentShaderSource = '\n  #ifdef GL_ES\n  precision mediump float;\n  #endif\n  varying vec4 v_Color;\n\n  void main() {\n    gl_FragColor = v_Color;\n  }\n';
+
+var Shape = function Shape() {
+  _classCallCheck(this, Shape);
+
+  this.vertices = [];
+  this.colors = [];
+  this.indices = [];
+};
+
+var Cone = function (_Shape) {
+  _inherits(Cone, _Shape);
+
+  function Cone(nDiv, radius, height, color) {
+    var _this$vertices, _this$colors, _this$vertices2, _this$colors2;
+
+    _classCallCheck(this, Cone);
+
+    var _this = _possibleConstructorReturn(this, (Cone.__proto__ || Object.getPrototypeOf(Cone)).call(this));
+
+    var numberVertices = nDiv + 2;
+    var angleStep = 2 * Math.PI / nDiv;
+    var centre = [0.0, 0.0, 0.0];
+    var top = [0.0, height, 0.0];
+
+    (_this$vertices = _this.vertices).push.apply(_this$vertices, centre);
+    (_this$colors = _this.colors).push.apply(_this$colors, _toConsumableArray(color));
+
+    (_this$vertices2 = _this.vertices).push.apply(_this$vertices2, top);
+    (_this$colors2 = _this.colors).push.apply(_this$colors2, _toConsumableArray(color));
+
+    // GENERO TUTTI I VERTICI.
+    for (var i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
+      var _this$colors3;
+
+      var x = Math.cos(angle) * radius;
+      var z = Math.sin(angle) * radius;
+      var y = centre[1];
+
+      _this.vertices.push(x, y, z);
+      (_this$colors3 = _this.colors).push.apply(_this$colors3, _toConsumableArray(color));
+
+      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
+      _this.indices.push(0, 1, i);
+
+      if (i < numberVertices - 1) {
+        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
+        _this.indices.push(0, i, i + 1);
+      } else {
+        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
+        _this.indices.push(0, i, 2);
+      }
+    }
+    return _this;
+  }
+
+  return Cone;
+}(Shape);
+
+var Cube = function (_Shape2) {
+  _inherits(Cube, _Shape2);
+
+  function Cube() {
+    _classCallCheck(this, Cube);
+
+    // Create a cube
+    //    v6----- v5
+    //   /|      /|
+    //  v1------v0|
+    //  | |     | |
+    //  | |v7---|-|v4
+    //  |/      |/
+    //  v2------v3
+    // Coordinates
+
+    // prettier-ignore
+    var _this2 = _possibleConstructorReturn(this, (Cube.__proto__ || Object.getPrototypeOf(Cube)).call(this));
+
+    _this2.vertices = [1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, // v0-v1-v2-v3 front
+    1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, // v0-v3-v4-v5 right
+    1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
+    -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, // v1-v6-v7-v2 left
+    -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, // v7-v4-v3-v2 down
+    1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0 // v4-v7-v6-v5 back
+    ];
+
+    // Colors
+    // prettier-ignore
+    _this2.colors = [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v7-v4-v3-v2 down
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 // v4-v7-v6-v5 back
+    ];
+
+    // Indices of the vertices
+    // prettier-ignore
+    _this2.indices = [0, 1, 2, 0, 2, 3, // front
+    4, 5, 6, 4, 6, 7, // right
+    8, 9, 10, 8, 10, 11, // up
+    12, 13, 14, 12, 14, 15, // left
+    16, 17, 18, 16, 18, 19, // down
+    20, 21, 22, 20, 22, 23 // back
+    ];
+    return _this2;
+  }
+
+  return Cube;
+}(Shape);
 
 var main = function main() {
   // Retrieve <canvas> element
@@ -43,7 +158,7 @@ var main = function main() {
   }
 
   var vpMatrix = new Matrix4(); // View projection matrix
-  var camPos = new Vector3([0.0, 3.0, 6.0]);
+  var camPos = new Vector3([0.0, -2.0, 7.0]);
 
   // Calculate the view projection matrix
   vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000);
@@ -255,14 +370,14 @@ var main = function main() {
   var tick = function tick() {
     // read geometria
     for (var geom in geometria) {
-      if (geom == true) {
+      if (geom === true) {
         console.log(geom);
       }
     }
 
     currentAngle = animate(currentAngle); // Update the rotation angle
     // Calculate the model matrix
-    modelMatrix.setRotate(currentAngle, 0, 1, 0); // Rotate around the y-axis
+    modelMatrix.setRotate(currentAngle, 1, 0, 0); // Rotate around the y-axis
 
     mvpMatrix.set(vpMatrix).multiply(modelMatrix);
     gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
@@ -279,44 +394,14 @@ var main = function main() {
 };
 
 var initVertexBuffers = function initVertexBuffers(gl) {
-  // Create a cube
-  //    v6----- v5
-  //   /|      /|
-  //  v1------v0|
-  //  | |     | |
-  //  | |v7---|-|v4
-  //  |/      |/
-  //  v2------v3
-  // Coordinates
-
-  // prettier-ignore
-  var vertices = new Float32Array([1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, // v0-v1-v2-v3 front
-  1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, // v0-v3-v4-v5 right
-  1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
-  -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, // v1-v6-v7-v2 left
-  -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, // v7-v4-v3-v2 down
-  1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0 // v4-v7-v6-v5 back
-  ]);
-
-  // Colors
-  // prettier-ignore
-  var colors = new Float32Array([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
-  1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
-  1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
-  1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
-  1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v7-v4-v3-v2 down
-  1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 // v4-v7-v6-v5 back
-  ]);
-
-  // Indices of the vertices
-  // prettier-ignore
-  var indices = new Uint8Array([0, 1, 2, 0, 2, 3, // front
-  4, 5, 6, 4, 6, 7, // right
-  8, 9, 10, 8, 10, 11, // up
-  12, 13, 14, 12, 14, 15, // left
-  16, 17, 18, 16, 18, 19, // down
-  20, 21, 22, 20, 22, 23 // back
-  ]);
+  /*
+  const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
+  */
+  debugger;
+  var shape = new Cube();
+  var vertices = new Float32Array(shape.vertices);
+  var indices = new Uint8Array(shape.indices);
+  var colors = new Float32Array(shape.colors);
 
   // Write the vertex property to buffers (coordinates, colors and normals)
   if (!initArrayBuffer(gl, 'a_Position', vertices, 3, gl.FLOAT)) return -1;
@@ -345,8 +430,10 @@ var initArrayBuffer = function initArrayBuffer(gl, attribute, data, num, type) {
     return false;
   }
 
-  // Write date into the buffer object
+  // Write data into the buffer object
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+  // verticesColor
   gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
   // Assign the buffer object to the attribute variable

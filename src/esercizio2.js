@@ -23,6 +23,99 @@ const fragmentShaderSource = `
   }
 `
 
+class Shape {
+  constructor() {
+    this.vertices = []
+    this.colors = []
+    this.indices = []
+  }
+}
+
+class Cone extends Shape {
+  constructor(nDiv, radius, height, color) {
+    super()
+
+    const numberVertices = nDiv + 2
+    const angleStep = 2 * Math.PI / nDiv
+    const centre = [0.0, 0.0, 0.0]
+    const top = [0.0, height, 0.0]
+
+    this.vertices.push(...centre)
+    this.colors.push(...color)
+
+    this.vertices.push(...top)
+    this.colors.push(...color)
+
+    // GENERO TUTTI I VERTICI.
+    for (let i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
+      let x = Math.cos(angle) * radius
+      let z = Math.sin(angle) * radius
+      let y = centre[1]
+
+      this.vertices.push(x, y, z)
+      this.colors.push(...color)
+
+      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
+      this.indices.push(0, 1, i)
+
+      if (i < numberVertices - 1) {
+        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
+        this.indices.push(0, i, i + 1)
+      } else {
+        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
+        this.indices.push(0, i, 2)
+      }
+    }
+  }
+}
+
+class Cube extends Shape {
+  constructor() {
+    super()
+    // Create a cube
+    //    v6----- v5
+    //   /|      /|
+    //  v1------v0|
+    //  | |     | |
+    //  | |v7---|-|v4
+    //  |/      |/
+    //  v2------v3
+    // Coordinates
+
+    // prettier-ignore
+    this.vertices = [
+      1.0, 1.0, 1.0,   -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,  1.0,-1.0, 1.0,  // v0-v1-v2-v3 front
+      1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0,  // v0-v3-v4-v5 right
+      1.0, 1.0, 1.0,   1.0, 1.0,-1.0,   -1.0, 1.0,-1.0,  -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
+      -1.0, 1.0, 1.0,  -1.0, 1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0,-1.0, 1.0, // v1-v6-v7-v2 left
+      -1.0,-1.0,-1.0,  1.0,-1.0,-1.0,   1.0,-1.0, 1.0,   -1.0,-1.0, 1.0, // v7-v4-v3-v2 down
+      1.0,-1.0,-1.0,   -1.0,-1.0,-1.0,  -1.0, 1.0,-1.0,  1.0, 1.0,-1.0   // v4-v7-v6-v5 back
+    ]
+
+    // Colors
+    // prettier-ignore
+    this.colors = [
+      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v1-v2-v3 front
+      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5 right
+      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v5-v6-v1 up
+      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v1-v6-v7-v2 left
+      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
+      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0      // v4-v7-v6-v5 back
+    ]
+
+    // Indices of the vertices
+    // prettier-ignore
+    this.indices = [
+      0,  1,  2,   0, 2,  3,     // front
+      4,  5,  6,   4, 6,  7,     // right
+      8,  9,  10,  8, 10, 11,    // up
+      12, 13, 14, 12, 14, 15,    // left
+      16, 17, 18, 16, 18, 19,    // down
+      20, 21, 22, 20, 22, 23     // back
+    ]
+  }
+}
+
 const main = () => {
   // Retrieve <canvas> element
   const canvas = document.querySelector('canvas#webgl-es2')
@@ -58,7 +151,7 @@ const main = () => {
   }
 
   let vpMatrix = new Matrix4() // View projection matrix
-  const camPos = new Vector3([0.0, 3.0, 6.0])
+  const camPos = new Vector3([0.0, -2.0, 7.0])
 
   // Calculate the view projection matrix
   vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
@@ -165,14 +258,14 @@ const main = () => {
   const tick = () => {
     // read geometria
     for (let geom in geometria) {
-      if (geom == true) {
+      if (geom === true) {
         console.log(geom)
       }
     }
 
     currentAngle = animate(currentAngle) // Update the rotation angle
     // Calculate the model matrix
-    modelMatrix.setRotate(currentAngle, 0, 1, 0) // Rotate around the y-axis
+    modelMatrix.setRotate(currentAngle, 1, 0, 0) // Rotate around the y-axis
 
     mvpMatrix.set(vpMatrix).multiply(modelMatrix)
     gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements)
@@ -189,47 +282,14 @@ const main = () => {
 }
 
 const initVertexBuffers = gl => {
-  // Create a cube
-  //    v6----- v5
-  //   /|      /|
-  //  v1------v0|
-  //  | |     | |
-  //  | |v7---|-|v4
-  //  |/      |/
-  //  v2------v3
-  // Coordinates
-
-  // prettier-ignore
-  const vertices = new Float32Array([
-    1.0, 1.0, 1.0,   -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,  1.0,-1.0, 1.0,  // v0-v1-v2-v3 front
-    1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0,  // v0-v3-v4-v5 right
-    1.0, 1.0, 1.0,   1.0, 1.0,-1.0,   -1.0, 1.0,-1.0,  -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
-    -1.0, 1.0, 1.0,  -1.0, 1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0,-1.0, 1.0, // v1-v6-v7-v2 left
-    -1.0,-1.0,-1.0,  1.0,-1.0,-1.0,   1.0,-1.0, 1.0,   -1.0,-1.0, 1.0, // v7-v4-v3-v2 down
-    1.0,-1.0,-1.0,   -1.0,-1.0,-1.0,  -1.0, 1.0,-1.0,  1.0, 1.0,-1.0   // v4-v7-v6-v5 back
-  ]);
-
-  // Colors
-  // prettier-ignore
-  const colors = new Float32Array([
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v1-v2-v3 front
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5 right
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v5-v6-v1 up
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v1-v6-v7-v2 left
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0      // v4-v7-v6-v5 back
-  ]);
-
-  // Indices of the vertices
-  // prettier-ignore
-  const indices = new Uint8Array([
-    0,  1,  2,   0, 2,  3,     // front
-    4,  5,  6,   4, 6,  7,     // right
-    8,  9,  10,  8, 10, 11,    // up
-    12, 13, 14, 12, 14, 15,    // left
-    16, 17, 18, 16, 18, 19,    // down
-    20, 21, 22, 20, 22, 23     // back
-  ]);
+  /*
+  const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
+  */
+  debugger
+  const shape = new Cube()
+  const vertices = new Float32Array(shape.vertices)
+  const indices = new Uint8Array(shape.indices)
+  const colors = new Float32Array(shape.colors)
 
   // Write the vertex property to buffers (coordinates, colors and normals)
   if (!initArrayBuffer(gl, 'a_Position', vertices, 3, gl.FLOAT)) return -1
@@ -258,8 +318,10 @@ const initArrayBuffer = (gl, attribute, data, num, type) => {
     return false
   }
 
-  // Write date into the buffer object
+  // Write data into the buffer object
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+
+  // verticesColor
   gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
 
   // Assign the buffer object to the attribute variable
