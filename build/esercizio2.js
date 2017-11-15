@@ -65,8 +65,10 @@ var Cone = (function(_Shape) {
     var angleStep = 2 * Math.PI / nDiv
     var centre = [0.0, 0.0, 0.0]
     var top = [0.0, height, 0.0]
+
     ;(_this$vertices = _this.vertices).push.apply(_this$vertices, centre)
     ;(_this$colors = _this.colors).push.apply(_this$colors, _toConsumableArray(color))
+
     ;(_this$vertices2 = _this.vertices).push.apply(_this$vertices2, top)
     ;(_this$colors2 = _this.colors).push.apply(_this$colors2, _toConsumableArray(color))
 
@@ -229,10 +231,12 @@ var Cylinder = (function(_Shape3) {
 
     var numberVertices = 2 * nDiv + 2
     var angleStep = 2 * Math.PI / nDiv
-    var centreBottom = [0.0, 0.0, 0.0]
+    var centreBottom = [0.0, 0.0, 0.0] //Due centri, uno in basso ed uno in alto.
     var centreTop = [0.0, height, 0.0]
+
     ;(_this3$vertices = _this3.vertices).push.apply(_this3$vertices, centreBottom) //Indice 0
     ;(_this3$colors = _this3.colors).push.apply(_this3$colors, _toConsumableArray(color))
+
     ;(_this3$vertices2 = _this3.vertices).push.apply(_this3$vertices2, centreTop) //Indice 1
     ;(_this3$colors2 = _this3.colors).push.apply(_this3$colors2, _toConsumableArray(color))
 
@@ -241,6 +245,7 @@ var Cylinder = (function(_Shape3) {
       j = void 0,
       k = void 0
 
+    //Carico dalla posizione 2 ad nDiv + 1 i vertici della circonferenza inferiore.
     for (i = 0, angle = 0; i < nDiv; i++, angle += angleStep) {
       var _this3$colors3
 
@@ -250,8 +255,8 @@ var Cylinder = (function(_Shape3) {
       _this3.vertices.push(x, centreBottom[1], z) //i ed è il vertice in basso
       ;(_this3$colors3 = _this3.colors).push.apply(_this3$colors3, _toConsumableArray(color))
     }
-    debugger
 
+    //Carico dalla posizione nDiv + 2 ad 2*nDiv + 1 i vertici della circonferenza superiore
     for (j = 0, angle = 0; j < nDiv; j++, angle += angleStep) {
       var _this3$colors4
 
@@ -261,20 +266,33 @@ var Cylinder = (function(_Shape3) {
       _this3.vertices.push(_x, centreTop[1], _z) //i ed è il vertice in basso
       ;(_this3$colors4 = _this3.colors).push.apply(_this3$colors4, _toConsumableArray(color))
     }
-    debugger
 
+    //Itero da 0 a nDiv - 1 per inserire gli indici nel buffer.
     for (k = 0; k < nDiv; k++) {
-      i = k + 2
-      j = i + nDiv
+      i = k + 2 //Indice che scorre i vertici della circonferenza inferiore.
+      j = i + nDiv //Indice che scorre i vertici della circonferenza superiore.
 
+      //Se non stiamo considerando gli ultimi vertici sulle circonferenze.
       if (k < nDiv - 1) {
-        //DISEGNAMO LE CIRCO.
+        //Disegnamo le due circonferenze come al solito.
         _this3.indices.push(i, i + 1, 0)
         _this3.indices.push(j, j + 1, 1)
 
+        //Disegniamo la maglia costruendo quadrati formati da due triangoli.
+        /*
+         j      j+1
+          + - - +
+          |     |
+          |     |
+          + - - +
+         i       i+1
+        */
         _this3.indices.push(i, i + 1, j)
         _this3.indices.push(j, j + 1, i + 1)
       } else {
+        //Come al solito gli ultimi vertici sulle circonferenze vanno uniti coi primi.
+        //Il primo vertice della circonferenza inferiore è 2.
+        //Il primo vertice della circonferenza superiore è nDiv + 2.
         _this3.indices.push(i, 2, 0)
         _this3.indices.push(j, nDiv + 2, 1)
 
@@ -282,7 +300,6 @@ var Cylinder = (function(_Shape3) {
         _this3.indices.push(j, nDiv + 2, 2)
       }
     }
-    debugger
     return _this3
   }
 
