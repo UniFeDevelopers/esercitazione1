@@ -122,47 +122,45 @@ class Cylinder extends Shape {
 
     const numberVertices = 2 * nDiv + 2
     const angleStep = 2 * Math.PI / nDiv
-    const centreBottom = [0.0, 0.0, 0.0] //Due centri, uno in basso ed uno in alto.
+    const centreBottom = [0.0, 0.0, 0.0] // Due centri, uno in basso ed uno in alto.
     const centreTop = [0.0, height, 0.0]
 
-    this.vertices.push(...centreBottom) //Indice 0
+    this.vertices.push(...centreBottom) // Indice 0
     this.colors.push(...color)
 
-    this.vertices.push(...centreTop) //Indice 1
+    this.vertices.push(...centreTop) // Indice 1
     this.colors.push(...color)
 
-    let angle, i, j, k
-
-    //Carico dalla posizione 2 ad nDiv + 1 i vertici della circonferenza inferiore.
-    for (i = 0, angle = 0; i < nDiv; i++, angle += angleStep) {
+    // Carico dalla posizione 2 ad nDiv + 1 i vertici della circonferenza inferiore.
+    for (let i = 0, angle = 0; i < nDiv; i++, angle += angleStep) {
       let x = Math.cos(angle) * radius
       let z = Math.sin(angle) * radius
 
-      this.vertices.push(x, centreBottom[1], z) //i ed è il vertice in basso
+      this.vertices.push(x, centreBottom[1], z) // i ed è il vertice in basso
       this.colors.push(...color)
     }
 
-    //Carico dalla posizione nDiv + 2 ad 2*nDiv + 1 i vertici della circonferenza superiore
-    for (j = 0, angle = 0; j < nDiv; j++, angle += angleStep) {
+    // Carico dalla posizione nDiv + 2 ad 2*nDiv + 1 i vertici della circonferenza superiore
+    for (let j = 0, angle = 0; j < nDiv; j++, angle += angleStep) {
       let x = Math.cos(angle) * radius
       let z = Math.sin(angle) * radius
 
-      this.vertices.push(x, centreTop[1], z) //i ed è il vertice in basso
+      this.vertices.push(x, centreTop[1], z) // i ed è il vertice in basso
       this.colors.push(...color)
     }
 
-    //Itero da 0 a nDiv - 1 per inserire gli indici nel buffer.
-    for (k = 0; k < nDiv; k++) {
-      i = k + 2 //Indice che scorre i vertici della circonferenza inferiore.
-      j = i + nDiv //Indice che scorre i vertici della circonferenza superiore.
+    // Itero da 0 a nDiv - 1 per inserire gli indici nel buffer.
+    for (let k = 0; k < nDiv; k++) {
+      let i = k + 2 // Indice che scorre i vertici della circonferenza inferiore.
+      let j = i + nDiv // Indice che scorre i vertici della circonferenza superiore.
 
-      //Se non stiamo considerando gli ultimi vertici sulle circonferenze.
+      // Se non stiamo considerando gli ultimi vertici sulle circonferenze.
       if (k < nDiv - 1) {
-        //Disegnamo le due circonferenze come al solito.
+        // Disegnamo le due circonferenze come al solito.
         this.indices.push(i, i + 1, 0)
         this.indices.push(j, j + 1, 1)
 
-        //Disegniamo la maglia costruendo quadrati formati da due triangoli.
+        // Disegniamo la maglia costruendo quadrati formati da due triangoli.
         /*
          j      j+1
           + - - +
@@ -171,12 +169,13 @@ class Cylinder extends Shape {
           + - - +
          i       i+1
         */
+
         this.indices.push(i, i + 1, j)
         this.indices.push(j, j + 1, i + 1)
       } else {
-        //Come al solito gli ultimi vertici sulle circonferenze vanno uniti coi primi.
-        //Il primo vertice della circonferenza inferiore è 2.
-        //Il primo vertice della circonferenza superiore è nDiv + 2.
+        // Come al solito gli ultimi vertici sulle circonferenze vanno uniti coi primi.
+        // Il primo vertice della circonferenza inferiore è 2.
+        // Il primo vertice della circonferenza superiore è nDiv + 2.
         this.indices.push(i, 2, 0)
         this.indices.push(j, nDiv + 2, 1)
 
