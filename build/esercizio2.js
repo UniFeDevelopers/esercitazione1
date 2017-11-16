@@ -65,8 +65,10 @@ var Cone = (function(_Shape) {
     var angleStep = 2 * Math.PI / nDiv
     var centre = [0.0, 0.0, 0.0]
     var top = [0.0, height, 0.0]
+
     ;(_this$vertices = _this.vertices).push.apply(_this$vertices, centre)
     ;(_this$colors = _this.colors).push.apply(_this$colors, _toConsumableArray(color))
+
     ;(_this$vertices2 = _this.vertices).push.apply(_this$vertices2, top)
     ;(_this$colors2 = _this.colors).push.apply(_this$colors2, _toConsumableArray(color))
 
@@ -205,6 +207,7 @@ var Cube = (function(_Shape2) {
     _this2.colors = [];
     for (var i = 0; i < _this2.vertices.length; i += 3) {
       var _this2$colors
+
       ;(_this2$colors = _this2.colors).push.apply(_this2$colors, _toConsumableArray(color))
     }
 
@@ -237,8 +240,10 @@ var Cylinder = (function(_Shape3) {
     var angleStep = 2 * Math.PI / nDiv
     var centreBottom = [0.0, 0.0, 0.0] // Due centri, uno in basso ed uno in alto.
     var centreTop = [0.0, height, 0.0]
+
     ;(_this3$vertices = _this3.vertices).push.apply(_this3$vertices, centreBottom) // Indice 0
     ;(_this3$colors = _this3.colors).push.apply(_this3$colors, _toConsumableArray(color))
+
     ;(_this3$vertices2 = _this3.vertices).push.apply(_this3$vertices2, centreTop) // Indice 1
     ;(_this3$colors2 = _this3.colors).push.apply(_this3$colors2, _toConsumableArray(color))
 
@@ -436,6 +441,10 @@ var main = function main() {
           case 'torus':
             shape = new Cube(colore.color0)
             break
+
+          default:
+            shape = new Cube(colore.color0)
+            break
         }
       }
     }
@@ -490,7 +499,7 @@ var main = function main() {
 
   gui.add(geometria, 'cone').onFinishChange(function(value) {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = value
       geometria.cylinder = false
@@ -535,7 +544,7 @@ var main = function main() {
 
   gui.add(geometria, 'cylinder').onFinishChange(function(value) {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = false
       geometria.cylinder = value
@@ -580,7 +589,7 @@ var main = function main() {
 
   gui.add(geometria, 'sphere').onFinishChange(function(value) {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = false
       geometria.cylinder = false
@@ -625,7 +634,7 @@ var main = function main() {
 
   gui.add(geometria, 'torus').onFinishChange(function(value) {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = false
       geometria.cylinder = false
@@ -660,6 +669,14 @@ var main = function main() {
         if (_didIteratorError5) {
           throw _iteratorError5
         }
+      }
+    }
+  })
+
+  document.querySelectorAll('input[type="checkbox"').forEach(function(el) {
+    el.onchange = function(e) {
+      if (!e.target.checked) {
+        e.target.checked = true
       }
     }
   })

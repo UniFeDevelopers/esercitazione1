@@ -308,6 +308,10 @@ const main = () => {
           case 'torus':
             shape = new Cube(colore.color0)
             break
+
+          default:
+            shape = new Cube(colore.color0)
+            break
         }
       }
     }
@@ -337,7 +341,7 @@ const main = () => {
 
   gui.add(geometria, 'cone').onFinishChange(value => {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = value
       geometria.cylinder = false
@@ -357,7 +361,7 @@ const main = () => {
 
   gui.add(geometria, 'cylinder').onFinishChange(value => {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = false
       geometria.cylinder = value
@@ -377,7 +381,7 @@ const main = () => {
 
   gui.add(geometria, 'sphere').onFinishChange(value => {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = false
       geometria.cylinder = false
@@ -397,7 +401,7 @@ const main = () => {
 
   gui.add(geometria, 'torus').onFinishChange(value => {
     // Fires when a controller loses focus.
-    if (value == true) {
+    if (value === true) {
       geometria.cube = false
       geometria.cone = false
       geometria.cylinder = false
@@ -408,6 +412,14 @@ const main = () => {
     // Iterate over all controllers
     for (let ctrl of gui.__controllers) {
       ctrl.updateDisplay()
+    }
+  })
+
+  document.querySelectorAll('input[type="checkbox"').forEach(el => {
+    el.onchange = e => {
+      if (!e.target.checked) {
+        e.target.checked = true
+      }
     }
   })
 
