@@ -225,10 +225,12 @@ class Torus extends Shape {
   constructor(nDiv, radius, radiusInner, color) {
     super()
 
-    const angleStep = 2 * Math.PI / nDiv
+    for (let j = 0; j <= nDiv; j++) {
+      let phi = j * 2 * Math.PI / nDiv
 
-    for (let theta = 0; theta < 2 * Math.PI; theta += angleStep) {
-      for (let phi = 0; phi < 2 * Math.PI; phi += angleStep) {
+      for (let i = 0; i <= nDiv; i++) {
+        let theta = i * 2 * Math.PI / nDiv
+
         let x = Math.sin(phi) * (radius + radiusInner * Math.cos(theta))
         let y = Math.cos(phi) * (radius + radiusInner * Math.cos(theta))
         let z = Math.sin(theta) * radiusInner
@@ -238,20 +240,14 @@ class Torus extends Shape {
       }
     }
 
-    this.indices = new Array((nDiv * 2 + 2) * nDiv)
-    for (let k = 0; k < nDiv; k++) {
-      let j = k * nDiv
-      for (var i = 0; i < nDiv * 2; i++) {
-        if (i % 2 == 0) {
-          this.indices[k * nDiv * 2 + i + k * 2] = j++
-        } else {
-          this.indices[k * nDiv * 2 + i + k * 2] = nDiv + (k == nDiv - 1 ? j - k * nDiv - nDiv : j) - 1
-        }
-      }
+    for (let j = 0; j < nDiv; j++) {
+      for (let i = 0; i < nDiv; i++) {
+        let p1 = j * (nDiv + 1) + i
+        let p2 = p1 + (nDiv + 1)
 
-      // Per completare la strip
-      this.indices[nDiv * (k + 1) * 2 + k * 2] = this.indices[k * nDiv * 2 + k * 2]
-      this.indices[nDiv * (k + 1) * 2 + 1 + k * 2] = this.indices[k * nDiv * 2 + k * 2 + 1]
+        this.indices.push(p1, p2, p1 + 1)
+        this.indices.push(p1 + 1, p2, p2 + 1)
+      }
     }
   }
 }
@@ -309,7 +305,7 @@ const main = () => {
     cone: [200, 1, 2],
     cylinder: [50, 1, 2],
     sphere: [15, 1],
-    torus: [10, 1, 0.2],
+    torus: [15, 1, 0.2],
   }
 
   //*********************************************************************

@@ -356,11 +356,13 @@ var Torus = (function(_Shape5) {
 
     var _this5 = _possibleConstructorReturn(this, (Torus.__proto__ || Object.getPrototypeOf(Torus)).call(this))
 
-    var angleStep = 2 * Math.PI / nDiv
+    for (var j = 0; j <= nDiv; j++) {
+      var phi = j * 2 * Math.PI / nDiv
 
-    for (var theta = 0; theta < 2 * Math.PI; theta += angleStep) {
-      for (var phi = 0; phi < 2 * Math.PI; phi += angleStep) {
+      for (var i = 0; i <= nDiv; i++) {
         var _this5$colors
+
+        var theta = i * 2 * Math.PI / nDiv
 
         var x = Math.sin(phi) * (radius + radiusInner * Math.cos(theta))
         var y = Math.cos(phi) * (radius + radiusInner * Math.cos(theta))
@@ -371,20 +373,14 @@ var Torus = (function(_Shape5) {
       }
     }
 
-    _this5.indices = new Array((nDiv * 2 + 2) * nDiv)
-    for (var k = 0; k < nDiv; k++) {
-      var j = k * nDiv
-      for (var i = 0; i < nDiv * 2; i++) {
-        if (i % 2 == 0) {
-          _this5.indices[k * nDiv * 2 + i + k * 2] = j++
-        } else {
-          _this5.indices[k * nDiv * 2 + i + k * 2] = nDiv + (k == nDiv - 1 ? j - k * nDiv - nDiv : j) - 1
-        }
-      }
+    for (var _j3 = 0; _j3 < nDiv; _j3++) {
+      for (var _i3 = 0; _i3 < nDiv; _i3++) {
+        var p1 = _j3 * (nDiv + 1) + _i3
+        var p2 = p1 + (nDiv + 1)
 
-      // Per completare la strip
-      _this5.indices[nDiv * (k + 1) * 2 + k * 2] = _this5.indices[k * nDiv * 2 + k * 2]
-      _this5.indices[nDiv * (k + 1) * 2 + 1 + k * 2] = _this5.indices[k * nDiv * 2 + k * 2 + 1]
+        _this5.indices.push(p1, p2, p1 + 1)
+        _this5.indices.push(p1 + 1, p2, p2 + 1)
+      }
     }
     return _this5
   }
@@ -446,7 +442,7 @@ var main = function main() {
     cone: [200, 1, 2],
     cylinder: [50, 1, 2],
     sphere: [15, 1],
-    torus: [10, 1, 0.2],
+    torus: [15, 1, 0.2],
 
     //*********************************************************************
     // creo una GUI con dat.gui
