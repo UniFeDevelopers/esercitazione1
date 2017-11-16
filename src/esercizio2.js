@@ -191,69 +191,6 @@ class Sphere extends Shape {
   constructor(nDiv, radius, color) {
     super()
 
-    const numberVertices = 2 * nDiv + 2
-    const angleStepTheta = 2 * Math.PI / nDiv
-    const angleStepPhi = Math.PI / nDiv
-
-    const topVertice = [0, 0, radius]
-    const bottomVertice = [0, 0, -radius]
-
-    /*
-    this.vertices.push(...bottomVertice)
-    this.colors.push(...color)
-
-    let firstVertex
-    let previousFirstVertex
-    let i = 2
-    for (let theta = angleStepTheta; theta < Math.PI; theta += angleStepTheta) {
-      for (let phi = -Math.PI; phi < Math.PI; phi += angleStepPhi, i++) {
-        let x = radius * Math.cos(phi) * Math.sin(theta)
-        let y = radius * Math.sin(phi) * Math.sin(theta)
-        let z = radius * Math.cos(theta)
-
-        this.vertices.push(x, y, z)
-        this.colors.push(...color)
-      }
-    }
-
-    this.vertices.push(...topVertice)
-    this.colors.push(...color)
-
-    for (let theta = angleStepTheta; theta < Math.PI; theta += angleStepTheta) {
-      for (let phi = -Math.PI; phi < Math.PI; phi += angleStepPhi, i++) {
-        if (phi === -Math.PI) {
-          previousFirstVertex = firstVertex ? firstVertex : 1
-          if (!firstVertex) {
-            console.error('error with previous first vertex: cacca ' + firstVertex)
-          }
-          firstVertex = i
-        }
-        if (theta === angleStepTheta) {
-          if (phi === Math.PI - angleStepPhi) {
-            this.indices.push(i, firstVertex, 2)
-          } else {
-            this.indices.push(i, i + 1, 2)
-          }
-        } else if (theta === Math.PI - angleStepTheta) {
-          if (phi === Math.PI - angleStepPhi) {
-            this.indices(i, firstVertex, 1)
-          } else {
-            this.indices.push(i, i + 1, 1)
-          }
-        } else {
-          let j = i - nDiv
-          if (phi === Math.PI - angleStepPhi) {
-            this.indices.push(i, j, previousFirstVertex)
-            this.indices.push(i, firstVertex, previousFirstVertex)
-          } else {
-            this.indices.push(i, j, j + 1)
-            this.indices.push(i, i + 1, j + 1)
-          }
-        }
-      }
-    }
-    */
-
     for (let j = 0; j <= nDiv; j++) {
       let phi = j * Math.PI / nDiv
 
@@ -278,8 +215,6 @@ class Sphere extends Shape {
         this.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
-
-    debugger
   }
 }
 
@@ -441,7 +376,7 @@ const main = () => {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     // Draw the cube
-    gl.drawElements(gl.POINTS, n, gl.UNSIGNED_BYTE, 0)
+    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0)
 
     requestAnimationFrame(tick, canvas) // Request that the browser ?calls tick
   }
@@ -452,7 +387,7 @@ const initVertexBuffers = gl => {
   // const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
   // const shape = new Cube()
   // const shape = new Cylinder(50, 1, 2, [1.0, 1.0, 0.0])
-  const shape = new Sphere(50, 1, [1.0, 1.0, 0.0])
+  const shape = new Sphere(15, 1, [1.0, 1.0, 0.0])
 
   const vertices = new Float32Array(shape.vertices)
   const indices = new Uint8Array(shape.indices)

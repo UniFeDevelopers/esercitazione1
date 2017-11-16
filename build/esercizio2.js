@@ -65,10 +65,8 @@ var Cone = (function(_Shape) {
     var angleStep = 2 * Math.PI / nDiv
     var centre = [0.0, 0.0, 0.0]
     var top = [0.0, height, 0.0]
-
     ;(_this$vertices = _this.vertices).push.apply(_this$vertices, centre)
     ;(_this$colors = _this.colors).push.apply(_this$colors, _toConsumableArray(color))
-
     ;(_this$vertices2 = _this.vertices).push.apply(_this$vertices2, top)
     ;(_this$colors2 = _this.colors).push.apply(_this$colors2, _toConsumableArray(color))
 
@@ -233,10 +231,8 @@ var Cylinder = (function(_Shape3) {
     var angleStep = 2 * Math.PI / nDiv
     var centreBottom = [0.0, 0.0, 0.0] // Due centri, uno in basso ed uno in alto.
     var centreTop = [0.0, height, 0.0]
-
     ;(_this3$vertices = _this3.vertices).push.apply(_this3$vertices, centreBottom) // Indice 0
     ;(_this3$colors = _this3.colors).push.apply(_this3$colors, _toConsumableArray(color))
-
     ;(_this3$vertices2 = _this3.vertices).push.apply(_this3$vertices2, centreTop) // Indice 1
     ;(_this3$colors2 = _this3.colors).push.apply(_this3$colors2, _toConsumableArray(color))
 
@@ -310,65 +306,6 @@ var Sphere = (function(_Shape4) {
 
     var _this4 = _possibleConstructorReturn(this, (Sphere.__proto__ || Object.getPrototypeOf(Sphere)).call(this))
 
-    var numberVertices = 2 * nDiv + 2
-    var angleStepTheta = 2 * Math.PI / nDiv
-    var angleStepPhi = Math.PI / nDiv
-
-    var topVertice = [0, 0, radius]
-    var bottomVertice = [0, 0, -radius]
-
-    /*
-    this.vertices.push(...bottomVertice)
-    this.colors.push(...color)
-     let firstVertex
-    let previousFirstVertex
-    let i = 2
-    for (let theta = angleStepTheta; theta < Math.PI; theta += angleStepTheta) {
-      for (let phi = -Math.PI; phi < Math.PI; phi += angleStepPhi, i++) {
-        let x = radius * Math.cos(phi) * Math.sin(theta)
-        let y = radius * Math.sin(phi) * Math.sin(theta)
-        let z = radius * Math.cos(theta)
-         this.vertices.push(x, y, z)
-        this.colors.push(...color)
-      }
-    }
-     this.vertices.push(...topVertice)
-    this.colors.push(...color)
-     for (let theta = angleStepTheta; theta < Math.PI; theta += angleStepTheta) {
-      for (let phi = -Math.PI; phi < Math.PI; phi += angleStepPhi, i++) {
-        if (phi === -Math.PI) {
-          previousFirstVertex = firstVertex ? firstVertex : 1
-          if (!firstVertex) {
-            console.error('error with previous first vertex: cacca ' + firstVertex)
-          }
-          firstVertex = i
-        }
-        if (theta === angleStepTheta) {
-          if (phi === Math.PI - angleStepPhi) {
-            this.indices.push(i, firstVertex, 2)
-          } else {
-            this.indices.push(i, i + 1, 2)
-          }
-        } else if (theta === Math.PI - angleStepTheta) {
-          if (phi === Math.PI - angleStepPhi) {
-            this.indices(i, firstVertex, 1)
-          } else {
-            this.indices.push(i, i + 1, 1)
-          }
-        } else {
-          let j = i - nDiv
-          if (phi === Math.PI - angleStepPhi) {
-            this.indices.push(i, j, previousFirstVertex)
-            this.indices.push(i, firstVertex, previousFirstVertex)
-          } else {
-            this.indices.push(i, j, j + 1)
-            this.indices.push(i, i + 1, j + 1)
-          }
-        }
-      }
-    }
-    */
-
     for (var j = 0; j <= nDiv; j++) {
       var phi = j * Math.PI / nDiv
 
@@ -395,8 +332,6 @@ var Sphere = (function(_Shape4) {
         _this4.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
-
-    debugger
     return _this4
   }
 
@@ -692,7 +627,7 @@ var main = function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     // Draw the cube
-    gl.drawElements(gl.POINTS, n, gl.UNSIGNED_BYTE, 0)
+    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0)
 
     requestAnimationFrame(tick, canvas) // Request that the browser ?calls tick
   }
@@ -703,7 +638,7 @@ var initVertexBuffers = function initVertexBuffers(gl) {
   // const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
   // const shape = new Cube()
   // const shape = new Cylinder(50, 1, 2, [1.0, 1.0, 0.0])
-  var shape = new Sphere(50, 1, [1.0, 1.0, 0.0])
+  var shape = new Sphere(15, 1, [1.0, 1.0, 0.0])
 
   var vertices = new Float32Array(shape.vertices)
   var indices = new Uint8Array(shape.indices)
