@@ -37,7 +37,7 @@ function _classCallCheck(instance, Constructor) {
 
 // Vertex shader program
 var vertexShaderSource =
-  '\n  attribute vec4 a_Position;   // Vertex coordinates\n  attribute vec4 a_Color;      // Vertex Color\n  uniform mat4 u_MvpMatrix;    // Model-View-Projection Matrix\n  varying vec4 v_Color;        // vertex color\n\n  void main() {\n    gl_Position = u_MvpMatrix * a_Position;\n    v_Color = a_Color;\n  }\n'
+  '\n  attribute vec4 a_Position;   // Vertex coordinates\n  attribute vec4 a_Color;      // Vertex Color\n  uniform mat4 u_MvpMatrix;    // Model-View-Projection Matrix\n  varying vec4 v_Color;        // vertex color\n\n  void main() {\n    gl_Position = u_MvpMatrix * a_Position;\n    v_Color = a_Color;\n    gl_PointSize = 10.0;\n  }\n'
 
 // Fragment shader program
 var fragmentShaderSource =
@@ -300,6 +300,107 @@ var Cylinder = (function(_Shape3) {
   }
 
   return Cylinder
+})(Shape)
+
+var Sphere = (function(_Shape4) {
+  _inherits(Sphere, _Shape4)
+
+  function Sphere(nDiv, radius, color) {
+    _classCallCheck(this, Sphere)
+
+    var _this4 = _possibleConstructorReturn(this, (Sphere.__proto__ || Object.getPrototypeOf(Sphere)).call(this))
+
+    var numberVertices = 2 * nDiv + 2
+    var angleStepTheta = 2 * Math.PI / nDiv
+    var angleStepPhi = Math.PI / nDiv
+
+    var topVertice = [0, 0, radius]
+    var bottomVertice = [0, 0, -radius]
+
+    /*
+    this.vertices.push(...bottomVertice)
+    this.colors.push(...color)
+     let firstVertex
+    let previousFirstVertex
+    let i = 2
+    for (let theta = angleStepTheta; theta < Math.PI; theta += angleStepTheta) {
+      for (let phi = -Math.PI; phi < Math.PI; phi += angleStepPhi, i++) {
+        let x = radius * Math.cos(phi) * Math.sin(theta)
+        let y = radius * Math.sin(phi) * Math.sin(theta)
+        let z = radius * Math.cos(theta)
+         this.vertices.push(x, y, z)
+        this.colors.push(...color)
+      }
+    }
+     this.vertices.push(...topVertice)
+    this.colors.push(...color)
+     for (let theta = angleStepTheta; theta < Math.PI; theta += angleStepTheta) {
+      for (let phi = -Math.PI; phi < Math.PI; phi += angleStepPhi, i++) {
+        if (phi === -Math.PI) {
+          previousFirstVertex = firstVertex ? firstVertex : 1
+          if (!firstVertex) {
+            console.error('error with previous first vertex: cacca ' + firstVertex)
+          }
+          firstVertex = i
+        }
+        if (theta === angleStepTheta) {
+          if (phi === Math.PI - angleStepPhi) {
+            this.indices.push(i, firstVertex, 2)
+          } else {
+            this.indices.push(i, i + 1, 2)
+          }
+        } else if (theta === Math.PI - angleStepTheta) {
+          if (phi === Math.PI - angleStepPhi) {
+            this.indices(i, firstVertex, 1)
+          } else {
+            this.indices.push(i, i + 1, 1)
+          }
+        } else {
+          let j = i - nDiv
+          if (phi === Math.PI - angleStepPhi) {
+            this.indices.push(i, j, previousFirstVertex)
+            this.indices.push(i, firstVertex, previousFirstVertex)
+          } else {
+            this.indices.push(i, j, j + 1)
+            this.indices.push(i, i + 1, j + 1)
+          }
+        }
+      }
+    }
+    */
+
+    for (var j = 0; j <= nDiv; j++) {
+      var phi = j * Math.PI / nDiv
+
+      for (var i = 0; i <= nDiv; i++) {
+        var _this4$colors
+
+        var theta = i * 2 * Math.PI / nDiv
+
+        var x = radius * Math.cos(phi) * Math.sin(theta)
+        var y = radius * Math.sin(phi) * Math.sin(theta)
+        var z = radius * Math.cos(theta)
+
+        _this4.vertices.push(x, y, z)
+        ;(_this4$colors = _this4.colors).push.apply(_this4$colors, _toConsumableArray(color))
+      }
+    }
+
+    for (var _j2 = 0; _j2 < nDiv; _j2++) {
+      for (var _i2 = 0; _i2 < nDiv; _i2++) {
+        var p1 = _j2 * (nDiv + 1) + _i2
+        var p2 = p1 + (nDiv + 1)
+
+        _this4.indices.push(p1, p2, p1 + 1)
+        _this4.indices.push(p1 + 1, p2, p2 + 1)
+      }
+    }
+
+    debugger
+    return _this4
+  }
+
+  return Sphere
 })(Shape)
 
 var main = function main() {
@@ -591,7 +692,7 @@ var main = function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     // Draw the cube
-    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0)
+    gl.drawElements(gl.POINTS, n, gl.UNSIGNED_BYTE, 0)
 
     requestAnimationFrame(tick, canvas) // Request that the browser ?calls tick
   }
@@ -599,11 +700,11 @@ var main = function main() {
 }
 
 var initVertexBuffers = function initVertexBuffers(gl) {
-  //const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
-  //const shape = new Cube()
+  // const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
+  // const shape = new Cube()
+  // const shape = new Cylinder(50, 1, 2, [1.0, 1.0, 0.0])
+  var shape = new Sphere(50, 1, [1.0, 1.0, 0.0])
 
-  //nDiv, radius, height, color
-  var shape = new Cylinder(50, 1, 2, [1.0, 1.0, 0.0])
   var vertices = new Float32Array(shape.vertices)
   var indices = new Uint8Array(shape.indices)
   var colors = new Float32Array(shape.colors)
