@@ -125,7 +125,6 @@ class Cylinder extends Shape {
   constructor(nDiv, radius, height, color) {
     super()
 
-    const numberVertices = 2 * nDiv + 2
     const angleStep = 2 * Math.PI / nDiv
     const centreBottom = [0.0, 0.0, 0.0] // Due centri, uno in basso ed uno in alto.
     const centreTop = [0.0, height, 0.0]
@@ -222,6 +221,40 @@ class Sphere extends Shape {
   }
 }
 
+class Torus extends Shape {
+  constructor(nDiv, radius, radiusInner, color) {
+    super()
+
+    const angleStep = 2 * Math.PI / nDiv
+
+    for (let theta = 0; theta < 2 * Math.PI; theta += angleStep) {
+      for (let phi = 0; phi < 2 * Math.PI; phi += angleStep) {
+        let x = Math.sin(phi) * (radius + radiusInner * Math.cos(theta))
+        let y = Math.cos(phi) * (radius + radiusInner * Math.cos(theta))
+        let z = Math.sin(theta) * radiusInner
+
+        this.vertices.push(x, y, z)
+        this.colors.push(...color)
+      }
+    }
+
+    this.indices = new Array((nDiv * 2 + 2) * nDiv)
+    for (let k = 0; k < nDiv; k++) {
+      let j = k * nDiv
+      for (var i = 0; i < nDiv * 2; i++) {
+        if (i % 2 == 0) {
+          this.indices[k * nDiv * 2 + i + k * 2] = j++
+        } else {
+          this.indices[k * nDiv * 2 + i + k * 2] = nDiv + (k == nDiv - 1 ? j - k * nDiv - nDiv : j) - 1
+        }
+      }
+
+      // Per completare la strip
+      this.indices[nDiv * (k + 1) * 2 + k * 2] = this.indices[k * nDiv * 2 + k * 2]
+      this.indices[nDiv * (k + 1) * 2 + 1 + k * 2] = this.indices[k * nDiv * 2 + k * 2 + 1]
+    }
+  }
+}
 const main = () => {
   // Retrieve <canvas> element
   const canvas = document.querySelector('canvas#webgl-es2')
@@ -272,6 +305,13 @@ const main = () => {
   const modelMatrix = new Matrix4() // Model matrix
   const mvpMatrix = new Matrix4() // Model view projection matrix
 
+  const shapeOptions = {
+    cone: [200, 1, 2],
+    cylinder: [50, 1, 2],
+    sphere: [15, 1],
+    torus: [10, 1, 0.2],
+  }
+
   //*********************************************************************
   // creo una GUI con dat.gui
   const gui = new dat.GUI()
@@ -296,19 +336,19 @@ const main = () => {
             break
 
           case 'cone':
-            shape = new Cone(200, 1, 2, colore.color0)
+            shape = new Cone(...shapeOptions.cone, colore.color0)
             break
 
           case 'cylinder':
-            shape = new Cylinder(50, 1, 2, colore.color0)
+            shape = new Cylinder(...shapeOptions.cylinder, colore.color0)
             break
 
           case 'sphere':
-            shape = new Sphere(15, 1, colore.color0)
+            shape = new Sphere(...shapeOptions.sphere, colore.color0)
             break
 
           case 'torus':
-            shape = new Cube(colore.color0)
+            shape = new Torus(...shapeOptions.torus, colore.color0)
             break
 
           default:
@@ -352,7 +392,7 @@ const main = () => {
     }
 
     // update shape object and re-init buffers
-    shape = new Cone(200, 1, 2, colore.color0)
+    shape = new Cone(...shapeOptions.cone, colore.color0)
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -372,7 +412,7 @@ const main = () => {
     }
 
     // update shape object and re-init buffers
-    shape = new Cylinder(50, 1, 2, colore.color0)
+    shape = new Cylinder(...shapeOptions.cylinder, colore.color0)
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -392,7 +432,7 @@ const main = () => {
     }
 
     // update shape object and re-init buffers
-    shape = new Sphere(15, 1, colore.color0)
+    shape = new Sphere(...shapeOptions.sphere, colore.color0)
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -410,6 +450,10 @@ const main = () => {
       geometria.sphere = false
       geometria.torus = value
     }
+
+    // update shape object and re-init buffers
+    shape = new Torus(...shapeOptions.torus, colore.color0)
+    n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
     for (let ctrl of gui.__controllers) {
@@ -446,9 +490,6 @@ const main = () => {
 }
 
 const initVertexBuffers = (gl, shape) => {
-  // const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
-  // const shape = new Cylinder(50, 1, 2, [1.0, 1.0, 0.0])
-
   const vertices = new Float32Array(shape.vertices)
   const indices = new Uint8Array(shape.indices)
   const colors = new Float32Array(shape.colors)
