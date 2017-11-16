@@ -225,6 +225,8 @@ class Sphere extends Shape {
 const main = () => {
   // Retrieve <canvas> element
   const canvas = document.querySelector('canvas#webgl-es2')
+  canvas.setAttribute('width', window.innerWidth)
+  canvas.setAttribute('height', window.innerHeight)
 
   // Get the rendering context for WebGL
   var gl = getWebGLContext(canvas)
