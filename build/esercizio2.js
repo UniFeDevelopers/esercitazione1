@@ -101,7 +101,7 @@ var Cone = (function(_Shape) {
 var Cube = (function(_Shape2) {
   _inherits(Cube, _Shape2)
 
-  function Cube() {
+  function Cube(color) {
     _classCallCheck(this, Cube)
 
     // Create a cube
@@ -194,13 +194,19 @@ var Cube = (function(_Shape2) {
 
     // Colors
     // prettier-ignore
-    _this2.colors = [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
-    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
-    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
-    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
-    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v7-v4-v3-v2 down
-    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 // v4-v7-v6-v5 back
-    ];
+    // this.colors = [
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v1-v2-v3 front
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5 right
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v5-v6-v1 up
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v1-v6-v7-v2 left
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0      // v4-v7-v6-v5 back
+    // ]
+    _this2.colors = [];
+    for (var i = 0; i < _this2.vertices.length; i += 3) {
+      var _this2$colors
+      ;(_this2$colors = _this2.colors).push.apply(_this2$colors, _toConsumableArray(color))
+    }
 
     // Indices of the vertices
     // prettier-ignore
@@ -355,7 +361,10 @@ var main = function main() {
     return
   }
 
-  var n = initVertexBuffers(gl)
+  // set default shape to cube and init
+  var shape = new Cube([255, 0, 0])
+
+  var n = initVertexBuffers(gl, shape)
   if (n < 0) {
     console.log('Failed to set the vertex information')
     return
@@ -398,8 +407,40 @@ var main = function main() {
   var colore = { color0: [255, 0, 0] }
 
   gui.addColor(colore, 'color0').onFinishChange(function(value) {
-    console.log(value)
-    colore = { color0: value }
+    colore = {
+      color0: value.map(function(col) {
+        return parseFloat(col.toFixed(2))
+      }),
+    }
+
+    for (var geom in geometria) {
+      if (geometria[geom] === true) {
+        // update shape object and re-init buffers
+        switch (geom) {
+          case 'cube':
+            shape = new Cube(colore.color0)
+            break
+
+          case 'cone':
+            shape = new Cone(200, 1, 2, colore.color0)
+            break
+
+          case 'cylinder':
+            shape = new Cylinder(50, 1, 2, colore.color0)
+            break
+
+          case 'sphere':
+            shape = new Sphere(15, 1, colore.color0)
+            break
+
+          case 'torus':
+            shape = new Cube(colore.color0)
+            break
+        }
+      }
+    }
+
+    n = initVertexBuffers(gl, shape)
   })
 
   gui.add(geometria, 'cube').onFinishChange(function(value) {
@@ -411,6 +452,10 @@ var main = function main() {
       geometria.sphere = false
       geometria.torus = false
     }
+
+    // update shape object and re-init buffers
+    shape = new Cube(colore.color0)
+    n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
     var _iteratorNormalCompletion = true
@@ -453,6 +498,10 @@ var main = function main() {
       geometria.torus = false
     }
 
+    // update shape object and re-init buffers
+    shape = new Cone(200, 1, 2, colore.color0)
+    n = initVertexBuffers(gl, shape)
+
     // Iterate over all controllers
     var _iteratorNormalCompletion2 = true
     var _didIteratorError2 = false
@@ -494,6 +543,10 @@ var main = function main() {
       geometria.torus = false
     }
 
+    // update shape object and re-init buffers
+    shape = new Cylinder(50, 1, 2, colore.color0)
+    n = initVertexBuffers(gl, shape)
+
     // Iterate over all controllers
     var _iteratorNormalCompletion3 = true
     var _didIteratorError3 = false
@@ -534,6 +587,10 @@ var main = function main() {
       geometria.sphere = value
       geometria.torus = false
     }
+
+    // update shape object and re-init buffers
+    shape = new Sphere(15, 1, colore.color0)
+    n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
     var _iteratorNormalCompletion4 = true
@@ -609,13 +666,6 @@ var main = function main() {
 
   //*********************************************************************************
   var tick = function tick() {
-    // read geometria
-    for (var geom in geometria) {
-      if (geom === true) {
-        console.log(geom)
-      }
-    }
-
     currentAngle = animate(currentAngle) // Update the rotation angle
     // Calculate the model matrix
     modelMatrix.setRotate(currentAngle, 1, 0, 0) // Rotate around the y-axis
@@ -634,11 +684,9 @@ var main = function main() {
   tick()
 }
 
-var initVertexBuffers = function initVertexBuffers(gl) {
+var initVertexBuffers = function initVertexBuffers(gl, shape) {
   // const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
-  // const shape = new Cube()
   // const shape = new Cylinder(50, 1, 2, [1.0, 1.0, 0.0])
-  var shape = new Sphere(15, 1, [1.0, 1.0, 0.0])
 
   var vertices = new Float32Array(shape.vertices)
   var indices = new Uint8Array(shape.indices)

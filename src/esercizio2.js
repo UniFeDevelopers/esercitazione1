@@ -71,7 +71,7 @@ class Cone extends Shape {
 }
 
 class Cube extends Shape {
-  constructor() {
+  constructor(color) {
     super()
     // Create a cube
     //    v6----- v5
@@ -95,14 +95,18 @@ class Cube extends Shape {
 
     // Colors
     // prettier-ignore
-    this.colors = [
-      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v1-v2-v3 front
-      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5 right
-      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v5-v6-v1 up
-      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v1-v6-v7-v2 left
-      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
-      1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0      // v4-v7-v6-v5 back
-    ]
+    // this.colors = [
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v1-v2-v3 front
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5 right
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v5-v6-v1 up
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v1-v6-v7-v2 left
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
+    //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0      // v4-v7-v6-v5 back
+    // ]
+    this.colors = []
+    for (let i = 0; i < this.vertices.length; i += 3) {
+      this.colors.push(...color)
+    }
 
     // Indices of the vertices
     // prettier-ignore
@@ -235,7 +239,10 @@ const main = () => {
     return
   }
 
-  const n = initVertexBuffers(gl)
+  // set default shape to cube and init
+  let shape = new Cube([255, 0, 0])
+
+  let n = initVertexBuffers(gl, shape)
   if (n < 0) {
     console.log('Failed to set the vertex information')
     return
@@ -272,8 +279,40 @@ const main = () => {
   let colore = { color0: [255, 0, 0] }
 
   gui.addColor(colore, 'color0').onFinishChange(value => {
-    console.log(value)
-    colore = { color0: value }
+    colore = {
+      color0: value.map(col => {
+        return parseFloat(col.toFixed(2))
+      }),
+    }
+
+    for (let geom in geometria) {
+      if (geometria[geom] === true) {
+        // update shape object and re-init buffers
+        switch (geom) {
+          case 'cube':
+            shape = new Cube(colore.color0)
+            break
+
+          case 'cone':
+            shape = new Cone(200, 1, 2, colore.color0)
+            break
+
+          case 'cylinder':
+            shape = new Cylinder(50, 1, 2, colore.color0)
+            break
+
+          case 'sphere':
+            shape = new Sphere(15, 1, colore.color0)
+            break
+
+          case 'torus':
+            shape = new Cube(colore.color0)
+            break
+        }
+      }
+    }
+
+    n = initVertexBuffers(gl, shape)
   })
 
   gui.add(geometria, 'cube').onFinishChange(value => {
@@ -285,6 +324,10 @@ const main = () => {
       geometria.sphere = false
       geometria.torus = false
     }
+
+    // update shape object and re-init buffers
+    shape = new Cube(colore.color0)
+    n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
     for (let ctrl of gui.__controllers) {
@@ -302,6 +345,10 @@ const main = () => {
       geometria.torus = false
     }
 
+    // update shape object and re-init buffers
+    shape = new Cone(200, 1, 2, colore.color0)
+    n = initVertexBuffers(gl, shape)
+
     // Iterate over all controllers
     for (let ctrl of gui.__controllers) {
       ctrl.updateDisplay()
@@ -318,6 +365,10 @@ const main = () => {
       geometria.torus = false
     }
 
+    // update shape object and re-init buffers
+    shape = new Cylinder(50, 1, 2, colore.color0)
+    n = initVertexBuffers(gl, shape)
+
     // Iterate over all controllers
     for (let ctrl of gui.__controllers) {
       ctrl.updateDisplay()
@@ -333,6 +384,10 @@ const main = () => {
       geometria.sphere = value
       geometria.torus = false
     }
+
+    // update shape object and re-init buffers
+    shape = new Sphere(15, 1, colore.color0)
+    n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
     for (let ctrl of gui.__controllers) {
@@ -358,13 +413,6 @@ const main = () => {
 
   //*********************************************************************************
   const tick = () => {
-    // read geometria
-    for (let geom in geometria) {
-      if (geom === true) {
-        console.log(geom)
-      }
-    }
-
     currentAngle = animate(currentAngle) // Update the rotation angle
     // Calculate the model matrix
     modelMatrix.setRotate(currentAngle, 1, 0, 0) // Rotate around the y-axis
@@ -383,11 +431,9 @@ const main = () => {
   tick()
 }
 
-const initVertexBuffers = gl => {
+const initVertexBuffers = (gl, shape) => {
   // const shape = new Cone(200, 1, 2, [0.0, 1.0, 0.0])
-  // const shape = new Cube()
   // const shape = new Cylinder(50, 1, 2, [1.0, 1.0, 0.0])
-  const shape = new Sphere(15, 1, [1.0, 1.0, 0.0])
 
   const vertices = new Float32Array(shape.vertices)
   const indices = new Uint8Array(shape.indices)
