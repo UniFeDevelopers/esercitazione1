@@ -7,8 +7,7 @@ const vertexShaderSource = `
 
   void main() {
     gl_Position = u_MvpMatrix * a_Position;
-    v_Color = a_Color;
-    gl_PointSize = 10.0;
+    v_Color = normalize(a_Color);
   }
 `
 
