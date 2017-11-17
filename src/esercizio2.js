@@ -31,44 +31,6 @@ class Shape {
   }
 }
 
-class Cone extends Shape {
-  constructor(nDiv, radius, height, color) {
-    super()
-
-    const numberVertices = nDiv + 2
-    const angleStep = 2 * Math.PI / nDiv
-    const centre = [0.0, 0.0, 0.0]
-    const top = [0.0, height, 0.0]
-
-    this.vertices.push(...centre)
-    this.colors.push(...color)
-
-    this.vertices.push(...top)
-    this.colors.push(...color)
-
-    // GENERO TUTTI I VERTICI.
-    for (let i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
-      let x = Math.cos(angle) * radius
-      let z = Math.sin(angle) * radius
-      let y = centre[1]
-
-      this.vertices.push(x, y, z)
-      this.colors.push(...color)
-
-      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
-      this.indices.push(0, 1, i)
-
-      if (i < numberVertices - 1) {
-        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
-        this.indices.push(0, i, i + 1)
-      } else {
-        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
-        this.indices.push(0, i, 2)
-      }
-    }
-  }
-}
-
 class Cube extends Shape {
   constructor(color) {
     super()
@@ -117,6 +79,44 @@ class Cube extends Shape {
       16, 17, 18, 16, 18, 19,    // down
       20, 21, 22, 20, 22, 23     // back
     ]
+  }
+}
+
+class Cone extends Shape {
+  constructor(nDiv, radius, height, color) {
+    super()
+
+    const numberVertices = nDiv + 2
+    const angleStep = 2 * Math.PI / nDiv
+    const centre = [0.0, 0.0, 0.0]
+    const top = [0.0, height, 0.0]
+
+    this.vertices.push(...centre)
+    this.colors.push(...color)
+
+    this.vertices.push(...top)
+    this.colors.push(...color)
+
+    // GENERO TUTTI I VERTICI.
+    for (let i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
+      let x = Math.cos(angle) * radius
+      let z = Math.sin(angle) * radius
+      let y = centre[1]
+
+      this.vertices.push(x, y, z)
+      this.colors.push(...color)
+
+      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
+      this.indices.push(0, 1, i)
+
+      if (i < numberVertices - 1) {
+        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
+        this.indices.push(0, i, i + 1)
+      } else {
+        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
+        this.indices.push(0, i, 2)
+      }
+    }
   }
 }
 
@@ -193,12 +193,20 @@ class Sphere extends Shape {
   constructor(nDiv, radius, color) {
     super()
 
+    // Per disegnare una sfera abbiamo bisogno di nDiv^2 vertici.
+    // Il ciclo for più esterno è quello che itera sull'angolo phi, ossia quello che ci fa passare da
+    // una circonferenza alla sua consecutiva.
     for (let j = 0; j <= nDiv; j++) {
+      // L'angolo theta è compresto tra 0 e Pi
       let phi = j * Math.PI / nDiv
 
+      // Il ciclo for più interno è quello che itera sull'angolo theta, ossia quello che ci fa passare da un vertice
+      // al suo successivo sulla stessa circonferenza.
       for (let i = 0; i <= nDiv; i++) {
+        // L'angolo theta è compreso tra 0 e 2 * Pi.
         let theta = i * 2 * Math.PI / nDiv
 
+        // Il calcolo delle coordinate di un vertice avviene tramite le equazioni parametriche della sfera.
         let x = radius * Math.cos(phi) * Math.sin(theta)
         let y = radius * Math.sin(phi) * Math.sin(theta)
         let z = radius * Math.cos(theta)
@@ -208,11 +216,15 @@ class Sphere extends Shape {
       }
     }
 
+    // Inizializzazione degli indici, il significato dei cicli for è sempre lo stesso.
     for (let j = 0; j < nDiv; j++) {
       for (let i = 0; i < nDiv; i++) {
+        // p1 è un punto su di una circonferenza.
         let p1 = j * (nDiv + 1) + i
+        // p2 è il punto sulla circonferenza superiore a quella di p1, nella stessa posizione di p1.
         let p2 = p1 + (nDiv + 1)
 
+        // I punti vanno uniti come nel cilindro per formare dei quadrati.
         this.indices.push(p1, p2, p1 + 1)
         this.indices.push(p1 + 1, p2, p2 + 1)
       }

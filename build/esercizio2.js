@@ -51,57 +51,8 @@ var Shape = function Shape() {
   this.indices = []
 }
 
-var Cone = (function(_Shape) {
-  _inherits(Cone, _Shape)
-
-  function Cone(nDiv, radius, height, color) {
-    var _this$vertices, _this$colors, _this$vertices2, _this$colors2
-
-    _classCallCheck(this, Cone)
-
-    var _this = _possibleConstructorReturn(this, (Cone.__proto__ || Object.getPrototypeOf(Cone)).call(this))
-
-    var numberVertices = nDiv + 2
-    var angleStep = 2 * Math.PI / nDiv
-    var centre = [0.0, 0.0, 0.0]
-    var top = [0.0, height, 0.0]
-
-    ;(_this$vertices = _this.vertices).push.apply(_this$vertices, centre)
-    ;(_this$colors = _this.colors).push.apply(_this$colors, _toConsumableArray(color))
-
-    ;(_this$vertices2 = _this.vertices).push.apply(_this$vertices2, top)
-    ;(_this$colors2 = _this.colors).push.apply(_this$colors2, _toConsumableArray(color))
-
-    // GENERO TUTTI I VERTICI.
-    for (var i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
-      var _this$colors3
-
-      var x = Math.cos(angle) * radius
-      var z = Math.sin(angle) * radius
-      var y = centre[1]
-
-      _this.vertices.push(x, y, z)
-      ;(_this$colors3 = _this.colors).push.apply(_this$colors3, _toConsumableArray(color))
-
-      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
-      _this.indices.push(0, 1, i)
-
-      if (i < numberVertices - 1) {
-        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
-        _this.indices.push(0, i, i + 1)
-      } else {
-        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
-        _this.indices.push(0, i, 2)
-      }
-    }
-    return _this
-  }
-
-  return Cone
-})(Shape)
-
-var Cube = (function(_Shape2) {
-  _inherits(Cube, _Shape2)
+var Cube = (function(_Shape) {
+  _inherits(Cube, _Shape)
 
   function Cube(color) {
     _classCallCheck(this, Cube)
@@ -117,9 +68,9 @@ var Cube = (function(_Shape2) {
     // Coordinates
 
     // prettier-ignore
-    var _this2 = _possibleConstructorReturn(this, (Cube.__proto__ || Object.getPrototypeOf(Cube)).call(this));
+    var _this = _possibleConstructorReturn(this, (Cube.__proto__ || Object.getPrototypeOf(Cube)).call(this));
 
-    _this2.vertices = [
+    _this.vertices = [
       1.0,
       1.0,
       1.0,
@@ -204,26 +155,75 @@ var Cube = (function(_Shape2) {
     //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
     //   1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0      // v4-v7-v6-v5 back
     // ]
-    _this2.colors = [];
-    for (var i = 0; i < _this2.vertices.length; i += 3) {
-      var _this2$colors
+    _this.colors = [];
+    for (var i = 0; i < _this.vertices.length; i += 3) {
+      var _this$colors
 
-      ;(_this2$colors = _this2.colors).push.apply(_this2$colors, _toConsumableArray(color))
+      ;(_this$colors = _this.colors).push.apply(_this$colors, _toConsumableArray(color))
     }
 
     // Indices of the vertices
     // prettier-ignore
-    _this2.indices = [0, 1, 2, 0, 2, 3, // front
+    _this.indices = [0, 1, 2, 0, 2, 3, // front
     4, 5, 6, 4, 6, 7, // right
     8, 9, 10, 8, 10, 11, // up
     12, 13, 14, 12, 14, 15, // left
     16, 17, 18, 16, 18, 19, // down
     20, 21, 22, 20, 22, 23 // back
     ];
-    return _this2
+    return _this
   }
 
   return Cube
+})(Shape)
+
+var Cone = (function(_Shape2) {
+  _inherits(Cone, _Shape2)
+
+  function Cone(nDiv, radius, height, color) {
+    var _this2$vertices, _this2$colors, _this2$vertices2, _this2$colors2
+
+    _classCallCheck(this, Cone)
+
+    var _this2 = _possibleConstructorReturn(this, (Cone.__proto__ || Object.getPrototypeOf(Cone)).call(this))
+
+    var numberVertices = nDiv + 2
+    var angleStep = 2 * Math.PI / nDiv
+    var centre = [0.0, 0.0, 0.0]
+    var top = [0.0, height, 0.0]
+
+    ;(_this2$vertices = _this2.vertices).push.apply(_this2$vertices, centre)
+    ;(_this2$colors = _this2.colors).push.apply(_this2$colors, _toConsumableArray(color))
+
+    ;(_this2$vertices2 = _this2.vertices).push.apply(_this2$vertices2, top)
+    ;(_this2$colors2 = _this2.colors).push.apply(_this2$colors2, _toConsumableArray(color))
+
+    // GENERO TUTTI I VERTICI.
+    for (var i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
+      var _this2$colors3
+
+      var x = Math.cos(angle) * radius
+      var z = Math.sin(angle) * radius
+      var y = centre[1]
+
+      _this2.vertices.push(x, y, z)
+      ;(_this2$colors3 = _this2.colors).push.apply(_this2$colors3, _toConsumableArray(color))
+
+      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
+      _this2.indices.push(0, 1, i)
+
+      if (i < numberVertices - 1) {
+        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
+        _this2.indices.push(0, i, i + 1)
+      } else {
+        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
+        _this2.indices.push(0, i, 2)
+      }
+    }
+    return _this2
+  }
+
+  return Cone
 })(Shape)
 
 var Cylinder = (function(_Shape3) {
@@ -314,16 +314,24 @@ var Sphere = (function(_Shape4) {
   function Sphere(nDiv, radius, color) {
     _classCallCheck(this, Sphere)
 
+    // Per disegnare una sfera abbiamo bisogno di nDiv^2 vertici.
+    // Il ciclo for più esterno è quello che itera sull'angolo phi, ossia quello che ci fa passare da
+    // una circonferenza alla sua consecutiva.
     var _this4 = _possibleConstructorReturn(this, (Sphere.__proto__ || Object.getPrototypeOf(Sphere)).call(this))
 
     for (var j = 0; j <= nDiv; j++) {
+      // L'angolo theta è compresto tra 0 e Pi
       var phi = j * Math.PI / nDiv
 
+      // Il ciclo for più interno è quello che itera sull'angolo theta, ossia quello che ci fa passare da un vertice
+      // al suo successivo sulla stessa circonferenza.
       for (var i = 0; i <= nDiv; i++) {
         var _this4$colors
 
+        // L'angolo theta è compreso tra 0 e 2 * Pi.
         var theta = i * 2 * Math.PI / nDiv
 
+        // Il calcolo delle coordinate di un vertice avviene tramite le equazioni parametriche della sfera.
         var x = radius * Math.cos(phi) * Math.sin(theta)
         var y = radius * Math.sin(phi) * Math.sin(theta)
         var z = radius * Math.cos(theta)
@@ -333,11 +341,15 @@ var Sphere = (function(_Shape4) {
       }
     }
 
+    // Inizializzazione degli indici, il significato dei cicli for è sempre lo stesso.
     for (var _j2 = 0; _j2 < nDiv; _j2++) {
       for (var _i2 = 0; _i2 < nDiv; _i2++) {
+        // p1 è un punto su di una circonferenza.
         var p1 = _j2 * (nDiv + 1) + _i2
+        // p2 è il punto sulla circonferenza superiore a quella di p1, nella stessa posizione di p1.
         var p2 = p1 + (nDiv + 1)
 
+        // I punti vanno uniti come nel cilindro per formare dei quadrati.
         _this4.indices.push(p1, p2, p1 + 1)
         _this4.indices.push(p1 + 1, p2, p2 + 1)
       }
