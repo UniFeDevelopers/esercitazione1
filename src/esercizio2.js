@@ -250,6 +250,7 @@ class Torus extends Shape {
     }
   }
 }
+
 const main = () => {
   // Retrieve <canvas> element
   const canvas = document.querySelector('canvas#webgl-es2')
@@ -302,9 +303,9 @@ const main = () => {
 
   const shapeOptions = {
     cone: [200, 1, 2],
-    cylinder: [50, 1, 2],
-    sphere: [15, 1],
-    torus: [15, 1, 0.2],
+    cylinder: [100, 1, 2],
+    sphere: [100, 1],
+    torus: [100, 1, 0.2],
   }
 
   //*********************************************************************
@@ -477,7 +478,7 @@ const main = () => {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     // Draw the cube
-    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0)
+    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_SHORT, 0)
 
     requestAnimationFrame(tick, canvas) // Request that the browser ?calls tick
   }
@@ -486,7 +487,7 @@ const main = () => {
 
 const initVertexBuffers = (gl, shape) => {
   const vertices = new Float32Array(shape.vertices)
-  const indices = new Uint8Array(shape.indices)
+  const indices = new Uint16Array(shape.indices)
   const colors = new Float32Array(shape.colors)
 
   // Write the vertex property to buffers (coordinates, colors and normals)

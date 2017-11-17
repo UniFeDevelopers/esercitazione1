@@ -65,8 +65,10 @@ var Cone = (function(_Shape) {
     var angleStep = 2 * Math.PI / nDiv
     var centre = [0.0, 0.0, 0.0]
     var top = [0.0, height, 0.0]
+
     ;(_this$vertices = _this.vertices).push.apply(_this$vertices, centre)
     ;(_this$colors = _this.colors).push.apply(_this$colors, _toConsumableArray(color))
+
     ;(_this$vertices2 = _this.vertices).push.apply(_this$vertices2, top)
     ;(_this$colors2 = _this.colors).push.apply(_this$colors2, _toConsumableArray(color))
 
@@ -205,6 +207,7 @@ var Cube = (function(_Shape2) {
     _this2.colors = [];
     for (var i = 0; i < _this2.vertices.length; i += 3) {
       var _this2$colors
+
       ;(_this2$colors = _this2.colors).push.apply(_this2$colors, _toConsumableArray(color))
     }
 
@@ -236,8 +239,10 @@ var Cylinder = (function(_Shape3) {
     var angleStep = 2 * Math.PI / nDiv
     var centreBottom = [0.0, 0.0, 0.0] // Due centri, uno in basso ed uno in alto.
     var centreTop = [0.0, height, 0.0]
+
     ;(_this3$vertices = _this3.vertices).push.apply(_this3$vertices, centreBottom) // Indice 0
     ;(_this3$colors = _this3.colors).push.apply(_this3$colors, _toConsumableArray(color))
+
     ;(_this3$vertices2 = _this3.vertices).push.apply(_this3$vertices2, centreTop) // Indice 1
     ;(_this3$colors2 = _this3.colors).push.apply(_this3$colors2, _toConsumableArray(color))
 
@@ -435,9 +440,9 @@ var main = function main() {
 
   var shapeOptions = {
     cone: [200, 1, 2],
-    cylinder: [50, 1, 2],
-    sphere: [15, 1],
-    torus: [15, 1, 0.2],
+    cylinder: [100, 1, 2],
+    sphere: [100, 1],
+    torus: [100, 1, 0.2],
 
     //*********************************************************************
     // creo una GUI con dat.gui
@@ -765,7 +770,7 @@ var main = function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     // Draw the cube
-    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0)
+    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_SHORT, 0)
 
     requestAnimationFrame(tick, canvas) // Request that the browser ?calls tick
   }
@@ -774,7 +779,7 @@ var main = function main() {
 
 var initVertexBuffers = function initVertexBuffers(gl, shape) {
   var vertices = new Float32Array(shape.vertices)
-  var indices = new Uint8Array(shape.indices)
+  var indices = new Uint16Array(shape.indices)
   var colors = new Float32Array(shape.colors)
 
   // Write the vertex property to buffers (coordinates, colors and normals)
