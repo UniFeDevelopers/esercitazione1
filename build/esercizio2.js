@@ -314,6 +314,8 @@ var Cylinder = (function(_Shape3) {
         _this3.indices.push(_j, nDiv + 2, 2)
       }
     }
+
+    _this3.cameraPos = new Vector3([0.0, -2.0, 10.0])
     return _this3
   }
 
@@ -652,6 +654,10 @@ var main = function main() {
       Cylinder,
       [null].concat(_toConsumableArray(shapeOptions.cylinder), [colore.color0])
     ))()
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt.apply(vpMatrix, _toConsumableArray(shape.cameraPos.elements).concat([0, 0, 0, 0, 1, 0]))
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers

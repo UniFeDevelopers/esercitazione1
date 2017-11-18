@@ -198,6 +198,8 @@ class Cylinder extends Shape {
         this.indices.push(j, nDiv + 2, 2)
       }
     }
+
+    this.cameraPos = new Vector3([0.0, -2.0, 10.0])
   }
 }
 
@@ -441,6 +443,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Cylinder(...shapeOptions.cylinder, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
