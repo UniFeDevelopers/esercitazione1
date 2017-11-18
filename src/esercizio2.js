@@ -1,3 +1,13 @@
+/*
+  Esercitazione 1 - Esercizio 2
+
+  Gruppo:
+    - Bulzoni Federico
+    - Guerra Antonio
+    - Zambello Nicola
+
+*/
+
 // Vertex shader program
 const vertexShaderSource = `
   attribute vec4 a_Position;   // Vertex coordinates

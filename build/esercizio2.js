@@ -35,6 +35,16 @@ function _classCallCheck(instance, Constructor) {
   }
 }
 
+/*
+  Esercitazione 1 - Esercizio 2
+
+  Gruppo:
+    - Bulzoni Federico
+    - Guerra Antonio
+    - Zambello Nicola
+
+*/
+
 // Vertex shader program
 var vertexShaderSource =
   '\n  attribute vec4 a_Position;   // Vertex coordinates\n  attribute vec4 a_Color;      // Vertex Color\n  uniform mat4 u_MvpMatrix;    // Model-View-Projection Matrix\n  varying vec4 v_Color;        // vertex color\n\n  void main() {\n    gl_Position = u_MvpMatrix * a_Position;\n    v_Color = normalize(a_Color);\n  }\n'

@@ -1,6 +1,11 @@
 # 1° gruppo esercitazioni
 
 Esercitazioni del corso di Grafica Computerizzata  
+
+### Gruppo
+Bulzoni Federico  
+Guerra Antonio  
+Zambello Nicola  
   
 ## Esercizio 1
 

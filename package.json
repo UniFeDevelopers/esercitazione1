@@ -1,8 +1,7 @@
 {
-  "name": "WebGLTest",
-  "version": "0.1.0",
+  "name": "esercitazione1",
+  "version": "1.0.0",
   "main": "index.html",
-  "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^6.5.1",
     "babel-cli": "^6.26.0",

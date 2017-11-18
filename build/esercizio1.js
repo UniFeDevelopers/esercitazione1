@@ -1,5 +1,15 @@
 'use strict'
 
+/*
+  Esercitazione 1 - Esercizio 1
+
+  Gruppo:
+    - Bulzoni Federico
+    - Guerra Antonio
+    - Zambello Nicola
+
+*/
+
 var vertexShaderSource =
   '\n  attribute vec4 a_Position;\n  attribute vec4 a_Color;\n  varying vec4 v_Color;\n  void main() {\n    gl_Position = a_Position;\n    v_Color = a_Color;\n  }\n'
 
@@ -17,6 +27,11 @@ var a_Position = void 0
 var a_Color = void 0
 
 var addClickToRects = function addClickToRects() {
+  // se ci sono 2 o più click nel array dei click,
+  // preleva due click e, calcolando le coordinate dei quattro vertici
+  // e le quattro componenti del colore, aggiunge il nuovo rettangolo
+  // all'array dei rettangoli
+
   if (clickBuff.length && clickBuff.length % 2 === 0) {
     var click1 = clickBuff.pop()
     var click2 = clickBuff.pop()
@@ -51,6 +66,11 @@ var addClickToRects = function addClickToRects() {
 }
 
 var toggleWaitingSecondClick = function toggleWaitingSecondClick() {
+  // cambia il cursore in base allo stato:
+  // se l'utente ha aggiunto il primo click,
+  // setta il cursore a croce per dare feedback
+  // altrimenti lo resetta
+
   var body = document.querySelector('body')
   if (clickBuff.length) {
     body.setAttribute('style', 'cursor: crosshair')
@@ -60,19 +80,29 @@ var toggleWaitingSecondClick = function toggleWaitingSecondClick() {
 }
 
 canvas.addEventListener('click', function(e) {
+  // aggiunge un click all'array
   clickBuff.push({
     x: 2 * e.clientX / width - 1,
     y: -2 * e.clientY / height + 1,
     color: parseInt('0x' + document.querySelector('input#color-input').value.substr(1)),
   })
 
+  // chiama la funzione che gestisce l'array dei rettangoli
   if (addClickToRects(clickBuff, rects)) {
+    // se ha aggiunto un rettangolo, ri-disegna tutto
     draw()
   }
+
+  // chiama la funzione che gestisce il cursore in base allo stato
   toggleWaitingSecondClick()
 })
 
 document.addEventListener('keydown', function(e) {
+  // se è stato premuto il tasto z con il modificatore Ctrl,
+  // ed è stato aggiunto solo il primo dei due click,
+  // allora viene rimosso un click dall’array dei click,
+  // altrimenti viene rimosso un rettangolo dall’array dei rettangoli
+
   if (e.ctrlKey && e.code == 'KeyZ') {
     if (clickBuff.length > 0) {
       clickBuff.pop()
@@ -81,6 +111,7 @@ document.addEventListener('keydown', function(e) {
       draw()
     }
 
+    // chiama la funzione che gestisce il cursore in base allo stato
     toggleWaitingSecondClick()
   }
 })
@@ -88,8 +119,12 @@ document.addEventListener('keydown', function(e) {
 var init = function init(canvas, height, width) {
   canvas.width = width
   canvas.height = height
+
+  // inizializza la canvas per il contesto WebGL
   var gl = getWebGLContext(canvas)
   if (!gl) return
+
+  // inizializza gli shaders
   if (!initShaders(gl, vertexShaderSource, fragmentShaderSource)) return
 
   a_Position = gl.getAttribLocation(gl.program, 'a_Position')
@@ -104,6 +139,8 @@ var init = function init(canvas, height, width) {
 var draw = function draw() {
   gl.clear(gl.COLOR_BUFFER_BIT)
 
+  // crea n buffer in cui vengono salvati i valori
+  // dei singoli rettangoli per disegnarli con drawArrays
   var _iteratorNormalCompletion = true
   var _didIteratorError = false
   var _iteratorError = undefined
