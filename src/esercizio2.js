@@ -37,7 +37,7 @@ class Shape {
     this.vertices = []
     this.colors = []
     this.indices = []
-    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
+    this.cameraPos = new Vector3([0.0, 0.0, 6.0])
   }
 }
 
@@ -89,6 +89,8 @@ class Cube extends Shape {
       16, 17, 18, 16, 18, 19,    // down
       20, 21, 22, 20, 22, 23     // back
     ]
+
+    this.cameraPos = new Vector3([0.0, 0.0, 7.0])
   }
 }
 
@@ -128,7 +130,7 @@ class Cone extends Shape {
       }
     }
 
-    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
+    this.cameraPos = new Vector3([0.0, 0.0, 8.0])
   }
 }
 
@@ -201,7 +203,7 @@ class Cylinder extends Shape {
       }
     }
 
-    this.cameraPos = new Vector3([0.0, -2.0, 10.0])
+    this.cameraPos = new Vector3([0.0, 0.0, 10.0])
   }
 }
 
@@ -245,8 +247,6 @@ class Sphere extends Shape {
         this.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
-
-    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
   }
 }
 
@@ -283,8 +283,6 @@ class Torus extends Shape {
         this.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
-
-    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
   }
 }
 
@@ -328,11 +326,10 @@ const main = () => {
   }
 
   let vpMatrix = new Matrix4() // View projection matrix
-  const camPos = new Vector3([0.0, -2.0, 7.0])
 
   // Calculate the view projection matrix
   vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
-  vpMatrix.lookAt(...camPos.elements, 0, 0, 0, 0, 1, 0)
+  vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
 
   let currentAngle = 0.0 // Current rotation angle
   const modelMatrix = new Matrix4() // Model matrix
@@ -612,7 +609,7 @@ const animate = angle => {
   g_last = now
 
   // Update the current rotation angle (adjusted by the elapsed time)
-  let newAngle = angle + ANGLE_STEP * elapsed / 1000.0
+  let newAngle = angle + ANGLE_STEP * elapsed / 200.0
   return (newAngle %= 360)
 }
 
