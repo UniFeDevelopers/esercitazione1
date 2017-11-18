@@ -97,7 +97,7 @@ class Cone extends Shape {
     this.vertices.push(...top)
     this.colors.push(...color)
 
-    // GENERO TUTTI I VERTICI.
+    // genero tutti i vertici
     for (let i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
       let x = Math.cos(angle) * radius
       let z = Math.sin(angle) * radius
@@ -106,14 +106,14 @@ class Cone extends Shape {
       this.vertices.push(x, y, z)
       this.colors.push(...color)
 
-      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
+      // collego il centro al top ed al nostro vertice
       this.indices.push(0, 1, i)
 
       if (i < numberVertices - 1) {
-        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
+        // ossia collego il centro, il nostro vertice, e quello successivo
         this.indices.push(0, i, i + 1)
       } else {
-        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
+        // ossia collego il centro, il nostro vertice, e il primo vertice della circonferenza
         this.indices.push(0, i, 2)
       }
     }
@@ -125,7 +125,9 @@ class Cylinder extends Shape {
     super()
 
     const angleStep = 2 * Math.PI / nDiv
-    const centreBottom = [0.0, 0.0, 0.0] // Due centri, uno in basso ed uno in alto.
+
+    // Due centri, uno in basso ed uno in alto.
+    const centreBottom = [0.0, 0.0, 0.0]
     const centreTop = [0.0, height, 0.0]
 
     this.vertices.push(...centreBottom) // Indice 0
@@ -197,7 +199,7 @@ class Sphere extends Shape {
     // Il ciclo for più esterno è quello che itera sull'angolo phi, ossia quello che ci fa passare da
     // una circonferenza alla sua consecutiva.
     for (let j = 0; j <= nDiv; j++) {
-      // L'angolo theta è compresto tra 0 e Pi
+      // L'angolo phi è compresto tra 0 e Pi
       let phi = j * Math.PI / nDiv
 
       // Il ciclo for più interno è quello che itera sull'angolo theta, ossia quello che ci fa passare da un vertice
@@ -235,6 +237,11 @@ class Sphere extends Shape {
 class Torus extends Shape {
   constructor(nDiv, radius, radiusInner, color) {
     super()
+
+    // I vertici e gli indici del toro vengono calcolati come per la sfera
+    // cambia solamente l'angolo phi che arriva fino a 2 PI
+    // e chiaramente le coordinate dei vertici in funzione della
+    // formula parametrica del toro
 
     for (let j = 0; j <= nDiv; j++) {
       let phi = j * 2 * Math.PI / nDiv
@@ -329,6 +336,7 @@ const main = () => {
   let colore = { color0: [255, 0, 0] }
 
   gui.addColor(colore, 'color0').onFinishChange(value => {
+    // aggiorna il valore del colore, normalizzandolo
     colore = {
       color0: value.map(col => {
         return parseFloat(col.toFixed(2))
@@ -337,7 +345,8 @@ const main = () => {
 
     for (let geom in geometria) {
       if (geometria[geom] === true) {
-        // update shape object and re-init buffers
+        // Aggiorna l'oggetto shape con la figura selezionata,
+        // passando i parametri definiti in shapeOptions
         switch (geom) {
           case 'cube':
             shape = new Cube(colore.color0)
@@ -366,6 +375,7 @@ const main = () => {
       }
     }
 
+    // e re-inizializza i buffers
     n = initVertexBuffers(gl, shape)
   })
 
@@ -469,6 +479,8 @@ const main = () => {
     }
   })
 
+  // Forza i checkbox perchè non vengano deselezionati
+  // per evitare lo stato in cui nessuno sia selezionato
   document.querySelectorAll('input[type="checkbox"').forEach(el => {
     el.onchange = e => {
       if (!e.target.checked) {
@@ -492,7 +504,7 @@ const main = () => {
     // Draw the cube
     gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_SHORT, 0)
 
-    requestAnimationFrame(tick, canvas) // Request that the browser ?calls tick
+    requestAnimationFrame(tick, canvas) // Request that the browser calls tick
   }
   tick()
 }

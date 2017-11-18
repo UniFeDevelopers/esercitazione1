@@ -198,7 +198,7 @@ var Cone = (function(_Shape2) {
     ;(_this2$vertices2 = _this2.vertices).push.apply(_this2$vertices2, top)
     ;(_this2$colors2 = _this2.colors).push.apply(_this2$colors2, _toConsumableArray(color))
 
-    // GENERO TUTTI I VERTICI.
+    // genero tutti i vertici
     for (var i = 2, angle = 0; i < numberVertices; i++, angle += angleStep) {
       var _this2$colors3
 
@@ -209,14 +209,14 @@ var Cone = (function(_Shape2) {
       _this2.vertices.push(x, y, z)
       ;(_this2$colors3 = _this2.colors).push.apply(_this2$colors3, _toConsumableArray(color))
 
-      // COLLEGO IL CENTRO AL TOP ED AL NOSTRO VERTICE.
+      // collego il centro al top ed al nostro vertice
       _this2.indices.push(0, 1, i)
 
       if (i < numberVertices - 1) {
-        // OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E QUELLO SUCCESSIVO.
+        // ossia collego il centro, il nostro vertice, e quello successivo
         _this2.indices.push(0, i, i + 1)
       } else {
-        //OSSIA COLLEGO IL CENTRO, IL NOSTRO VERTICE, E IL PRIMO VERTICE DELLA CIRCONFERENZA.
+        // ossia collego il centro, il nostro vertice, e il primo vertice della circonferenza
         _this2.indices.push(0, i, 2)
       }
     }
@@ -237,7 +237,9 @@ var Cylinder = (function(_Shape3) {
     var _this3 = _possibleConstructorReturn(this, (Cylinder.__proto__ || Object.getPrototypeOf(Cylinder)).call(this))
 
     var angleStep = 2 * Math.PI / nDiv
-    var centreBottom = [0.0, 0.0, 0.0] // Due centri, uno in basso ed uno in alto.
+
+    // Due centri, uno in basso ed uno in alto.
+    var centreBottom = [0.0, 0.0, 0.0]
     var centreTop = [0.0, height, 0.0]
 
     ;(_this3$vertices = _this3.vertices).push.apply(_this3$vertices, centreBottom) // Indice 0
@@ -320,7 +322,7 @@ var Sphere = (function(_Shape4) {
     var _this4 = _possibleConstructorReturn(this, (Sphere.__proto__ || Object.getPrototypeOf(Sphere)).call(this))
 
     for (var j = 0; j <= nDiv; j++) {
-      // L'angolo theta è compresto tra 0 e Pi
+      // L'angolo phi è compresto tra 0 e Pi
       var phi = j * Math.PI / nDiv
 
       // Il ciclo for più interno è quello che itera sull'angolo theta, ossia quello che ci fa passare da un vertice
@@ -365,6 +367,11 @@ var Torus = (function(_Shape5) {
 
   function Torus(nDiv, radius, radiusInner, color) {
     _classCallCheck(this, Torus)
+
+    // I vertici e gli indici del toro vengono calcolati come per la sfera
+    // cambia solamente l'angolo phi che arriva fino a 2 PI
+    // e chiaramente le coordinate dei vertici in funzione della
+    // formula parametrica del toro
 
     var _this5 = _possibleConstructorReturn(this, (Torus.__proto__ || Object.getPrototypeOf(Torus)).call(this))
 
@@ -472,6 +479,7 @@ var main = function main() {
   var colore = { color0: [255, 0, 0] }
 
   gui.addColor(colore, 'color0').onFinishChange(function(value) {
+    // aggiorna il valore del colore, normalizzandolo
     colore = {
       color0: value.map(function(col) {
         return parseFloat(col.toFixed(2))
@@ -480,7 +488,8 @@ var main = function main() {
 
     for (var geom in geometria) {
       if (geometria[geom] === true) {
-        // update shape object and re-init buffers
+        // Aggiorna l'oggetto shape con la figura selezionata,
+        // passando i parametri definiti in shapeOptions
         switch (geom) {
           case 'cube':
             shape = new Cube(colore.color0)
@@ -521,6 +530,7 @@ var main = function main() {
       }
     }
 
+    // e re-inizializza i buffers
     n = initVertexBuffers(gl, shape)
   })
 
@@ -761,6 +771,8 @@ var main = function main() {
     }
   })
 
+  // Forza i checkbox perchè non vengano deselezionati
+  // per evitare lo stato in cui nessuno sia selezionato
   document.querySelectorAll('input[type="checkbox"').forEach(function(el) {
     el.onchange = function(e) {
       if (!e.target.checked) {
@@ -784,7 +796,7 @@ var main = function main() {
     // Draw the cube
     gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_SHORT, 0)
 
-    requestAnimationFrame(tick, canvas) // Request that the browser ?calls tick
+    requestAnimationFrame(tick, canvas) // Request that the browser calls tick
   }
   tick()
 }
