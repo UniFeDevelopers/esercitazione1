@@ -73,10 +73,10 @@ canvas.addEventListener('click', function(e) {
 })
 
 document.addEventListener('keydown', function(e) {
-  if (e.ctrlKey && e.code == 'KeyZ' && rects.length > 0) {
+  if (e.ctrlKey && e.code == 'KeyZ') {
     if (clickBuff.length > 0) {
       clickBuff.pop()
-    } else {
+    } else if (rects.length > 0) {
       rects.pop()
       draw()
     }
