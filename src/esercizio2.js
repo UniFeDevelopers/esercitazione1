@@ -5,7 +5,6 @@
     - Bulzoni Federico
     - Guerra Antonio
     - Zambello Nicola
-
 */
 
 // Vertex shader program
@@ -38,6 +37,7 @@ class Shape {
     this.vertices = []
     this.colors = []
     this.indices = []
+    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
   }
 }
 
@@ -127,6 +127,8 @@ class Cone extends Shape {
         this.indices.push(0, i, 2)
       }
     }
+
+    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
   }
 }
 
@@ -243,6 +245,8 @@ class Sphere extends Shape {
         this.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
+
+    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
   }
 }
 
@@ -279,6 +283,8 @@ class Torus extends Shape {
         this.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
+
+    this.cameraPos = new Vector3([0.0, -2.0, 7.0])
   }
 }
 
@@ -387,7 +393,9 @@ const main = () => {
       }
     }
 
-    // e re-inizializza i buffers
+    // e re-inizializza i buffers e setta la posizione della camera
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
     n = initVertexBuffers(gl, shape)
   })
 
@@ -403,6 +411,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Cube(colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -423,6 +435,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Cone(...shapeOptions.cone, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -467,6 +483,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Sphere(...shapeOptions.sphere, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -487,6 +507,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Torus(...shapeOptions.torus, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers

@@ -42,7 +42,6 @@ function _classCallCheck(instance, Constructor) {
     - Bulzoni Federico
     - Guerra Antonio
     - Zambello Nicola
-
 */
 
 // Vertex shader program
@@ -59,6 +58,7 @@ var Shape = function Shape() {
   this.vertices = []
   this.colors = []
   this.indices = []
+  this.cameraPos = new Vector3([0.0, -2.0, 7.0])
 }
 
 var Cube = (function(_Shape) {
@@ -230,6 +230,8 @@ var Cone = (function(_Shape2) {
         _this2.indices.push(0, i, 2)
       }
     }
+
+    _this2.cameraPos = new Vector3([0.0, -2.0, 7.0])
     return _this2
   }
 
@@ -368,6 +370,8 @@ var Sphere = (function(_Shape4) {
         _this4.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
+
+    _this4.cameraPos = new Vector3([0.0, -2.0, 7.0])
     return _this4
   }
 
@@ -413,6 +417,8 @@ var Torus = (function(_Shape5) {
         _this5.indices.push(p1 + 1, p2, p2 + 1)
       }
     }
+
+    _this5.cameraPos = new Vector3([0.0, -2.0, 7.0])
     return _this5
   }
 
@@ -542,7 +548,9 @@ var main = function main() {
       }
     }
 
-    // e re-inizializza i buffers
+    // e re-inizializza i buffers e setta la posizione della camera
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt.apply(vpMatrix, _toConsumableArray(shape.cameraPos.elements).concat([0, 0, 0, 0, 1, 0]))
     n = initVertexBuffers(gl, shape)
   })
 
@@ -558,6 +566,10 @@ var main = function main() {
 
     // update shape object and re-init buffers
     shape = new Cube(colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt.apply(vpMatrix, _toConsumableArray(shape.cameraPos.elements).concat([0, 0, 0, 0, 1, 0]))
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -606,6 +618,10 @@ var main = function main() {
       Cone,
       [null].concat(_toConsumableArray(shapeOptions.cone), [colore.color0])
     ))()
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt.apply(vpMatrix, _toConsumableArray(shape.cameraPos.elements).concat([0, 0, 0, 0, 1, 0]))
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -706,6 +722,10 @@ var main = function main() {
       Sphere,
       [null].concat(_toConsumableArray(shapeOptions.sphere), [colore.color0])
     ))()
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt.apply(vpMatrix, _toConsumableArray(shape.cameraPos.elements).concat([0, 0, 0, 0, 1, 0]))
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -754,6 +774,10 @@ var main = function main() {
       Torus,
       [null].concat(_toConsumableArray(shapeOptions.torus), [colore.color0])
     ))()
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt.apply(vpMatrix, _toConsumableArray(shape.cameraPos.elements).concat([0, 0, 0, 0, 1, 0]))
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
