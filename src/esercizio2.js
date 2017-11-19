@@ -530,7 +530,7 @@ const main = () => {
   const tick = () => {
     currentAngle = animate(currentAngle) // Update the rotation angle
     // Calculate the model matrix
-    modelMatrix.setRotate(currentAngle, 0, 1, -1) // Rotate around the y-axis
+    modelMatrix.setRotate(currentAngle, 0, 1, -1) // Rotate around the axis
 
     mvpMatrix.set(vpMatrix).multiply(modelMatrix)
     gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements)
