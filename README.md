@@ -86,6 +86,12 @@ Per avviare `prettier` a mano:
 yarn prettier-all
 ```
 
+### Server di sviluppo
+Per avviare il server di sviluppo per vedere i risultati, avviare `serve` tramite:
+```bash
+yarn start
+```
+
    
 ## Pipeline di sviluppo
 Per permettere a tutti di essere aggiornati sulle modifiche se non le si fa insieme, usiamo le Pull Request.  
