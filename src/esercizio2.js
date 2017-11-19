@@ -5,7 +5,6 @@
     - Bulzoni Federico
     - Guerra Antonio
     - Zambello Nicola
-
 */
 
 // Vertex shader program
@@ -38,6 +37,7 @@ class Shape {
     this.vertices = []
     this.colors = []
     this.indices = []
+    this.cameraPos = new Vector3([0.0, 0.0, 6.0])
   }
 }
 
@@ -89,6 +89,8 @@ class Cube extends Shape {
       16, 17, 18, 16, 18, 19,    // down
       20, 21, 22, 20, 22, 23     // back
     ]
+
+    this.cameraPos = new Vector3([0.0, 0.0, 7.0])
   }
 }
 
@@ -127,6 +129,8 @@ class Cone extends Shape {
         this.indices.push(0, i, 2)
       }
     }
+
+    this.cameraPos = new Vector3([0.0, 0.0, 8.0])
   }
 }
 
@@ -198,6 +202,8 @@ class Cylinder extends Shape {
         this.indices.push(j, nDiv + 2, 2)
       }
     }
+
+    this.cameraPos = new Vector3([0.0, 0.0, 10.0])
   }
 }
 
@@ -320,11 +326,10 @@ const main = () => {
   }
 
   let vpMatrix = new Matrix4() // View projection matrix
-  const camPos = new Vector3([0.0, -2.0, 7.0])
 
   // Calculate the view projection matrix
   vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
-  vpMatrix.lookAt(...camPos.elements, 0, 0, 0, 0, 1, 0)
+  vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
 
   let currentAngle = 0.0 // Current rotation angle
   const modelMatrix = new Matrix4() // Model matrix
@@ -385,7 +390,9 @@ const main = () => {
       }
     }
 
-    // e re-inizializza i buffers
+    // e re-inizializza i buffers e setta la posizione della camera
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
     n = initVertexBuffers(gl, shape)
   })
 
@@ -401,6 +408,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Cube(colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -421,6 +432,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Cone(...shapeOptions.cone, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -441,6 +456,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Cylinder(...shapeOptions.cylinder, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -461,6 +480,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Sphere(...shapeOptions.sphere, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -481,6 +504,10 @@ const main = () => {
 
     // update shape object and re-init buffers
     shape = new Torus(...shapeOptions.torus, colore.color0)
+
+    vpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 1000)
+    vpMatrix.lookAt(...shape.cameraPos.elements, 0, 0, 0, 0, 1, 0)
+
     n = initVertexBuffers(gl, shape)
 
     // Iterate over all controllers
@@ -582,7 +609,7 @@ const animate = angle => {
   g_last = now
 
   // Update the current rotation angle (adjusted by the elapsed time)
-  let newAngle = angle + ANGLE_STEP * elapsed / 1000.0
+  let newAngle = angle + ANGLE_STEP * elapsed / 200.0
   return (newAngle %= 360)
 }
 
